@@ -48,7 +48,11 @@
                   <div v-else>รอการอนุมัติ</div>
                 </td>
                 <td v-if="company.approveStatus !== true">
-                  <router-link :to="{path: `/ShowFileCompany/${company.id}`}"
+                  <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                    class="text-decoration-none btn btn-document-uploaded">
+                    เอกสารแนบ
+                  </router-link>
+                    <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -61,7 +65,11 @@
                   </button>
                 </td>
                 <td v-else>
-                   <router-link :to="{path: `/ShowFileCompany/${company.id}`}"
+                    <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                    class="text-decoration-none btn btn-document-uploaded">
+                    เอกสารแนบ
+                  </router-link>
+                    <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -235,8 +243,8 @@
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 0.3rem;
-    background: #00ff15;
-    border: 2px solid #00ff15;
+    background: #00bd10;
+    border: 2px solid #00bd10;
     color: white;
   }
 
@@ -249,8 +257,8 @@
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 0.3rem;
-    background: #00b30f;
-    border: 2px solid #00b30f;
+    background: #009b0d;
+    border: 2px solid #009b0d;
   }
 
 

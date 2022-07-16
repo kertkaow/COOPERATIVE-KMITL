@@ -63,7 +63,11 @@
             <td v-else>Not Approve</td>
 
             <td>
-                <router-link :to="{path: `/AdminFileCompany/${company.id}`}"
+              <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                    class="text-decoration-none btn btn-document-uploaded">
+                    เอกสารแนบ
+                  </router-link>
+                <router-link v-else :to="{path: `/AdminFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -265,6 +269,33 @@
     justify-content: center;
     text-align: center;
 
+  }
+
+   .btn-document-uploaded {
+    width: 7rem;
+    justify-content: center;
+    margin: 0.07rem;
+    text-align: center;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    background: #00bd10;
+    border: 2px solid #00bd10;
+    color: white;
+  }
+
+  .btn-document-uploaded:hover {
+    width: 7rem;
+    justify-content: center;
+    margin: 0.07rem;
+    text-align: center;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    background: #009b0d;
+    border: 2px solid #009b0d;
   }
 
   .manage-btn {
