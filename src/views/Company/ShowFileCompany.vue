@@ -13,7 +13,7 @@
             <label for="file" class="d-flex justify-content-center mb-3">เอกสารแนบของคุณ</label>
             <div v-if="Companys.fileStatus === true">
                 <a :href="url" class="d-flex justify-center btn edit-btn mb-4" id="myimg"
-                    target="blank">ดาวโหลดเอกสารแนบ</a>
+                    target="blank">เอกสารแนบ</a>
             </div>
             <div class="d-flex" v-if="Companys.fileStatus !== true">
                 <router-link :to="{path: `/CreateFileCompany/${this.companyDataId}`}"
