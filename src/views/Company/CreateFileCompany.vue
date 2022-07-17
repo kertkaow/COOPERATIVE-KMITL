@@ -1,5 +1,8 @@
 <template>
-  <div class="form-group">
+ <div v-if="loading">
+    <LoadingComponent />
+  </div>
+  <div v-else  class="form-group">
     <label for="file">*หมายเหตุ รายละเอียดของโครงการสามารถเป็นเอกสารแนบมาได้
       และในกรณีที่บริษัทนำเสนอโครงการสหกิจเป็นครั้งแรกให้กับภาควิชาวิทยาการคอมพิวเตอร์
       คณะวิทยาศาสตร์ สจล.
@@ -11,6 +14,7 @@
 </template>
 
 <script>
+import LoadingComponent from "../LoadingComponent.vue"
   import {
     storage,
     companyCollection
@@ -27,8 +31,14 @@
     getDoc,
   } from "firebase/firestore";
   export default {
+     components: {
+      // ExportComponent,
+      LoadingComponent
+    },
+
     data() {
       return {
+        loading:true,
         uploadTask: null,
         progress: 0,
         companyDataId: null,
@@ -61,6 +71,7 @@
                 break;
             }
             this.uploadFileStatus()
+            alert("อัพโหลดไฟล์เรียบร้อย")
             this.$router.push('/showprojectcom');
           },
           (error) => {
@@ -88,16 +99,38 @@
           alert("คุณไม่มีสิทธิ์เข้าถึง")
           this.$router.push("/")
         }
-      }
+      },
+       settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, "1000")
+      },
     },
     created() {
       let companyDataId = this.$route.params.companyDataId;
       this.companyDataId = companyDataId;
+      this.settimeOut();
       this.checkRole();
     }
   }
 </script>
 
 <style>
+.form-group {
+    animation: fade 0.3s ease-in-out forwards 0s;
 
+}
+
+
+
+ @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
+    }
 </style>

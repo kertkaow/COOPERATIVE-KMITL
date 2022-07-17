@@ -1,5 +1,8 @@
 <template>
-  <div class="row justify-content-center">
+ <div v-if="loading">
+        <LoadingComponent />
+    </div>
+  <div v-else class="row justify-content-center">
     <div class="col-md-6 bgbd">
       <!-- แบบ Forms -->
       <h1 class="d-flex justify-content-center formtitle-1">แบบฟอร์มเสนอโครงการสหกิจศึกษา</h1>
@@ -140,6 +143,7 @@
 </template>
 
 <script>
+    import LoadingComponent from "../LoadingComponent.vue"
   import {
     companyCollection
   } from '@/firebase';
@@ -152,6 +156,10 @@
   } from '@firebase/auth';
 
   export default {
+      components: {
+            // ExportComponent,
+            LoadingComponent
+        },
     data() {
       return {
         loading:true,
@@ -209,17 +217,30 @@
         });
         console.log(addCompanyData);
         alert("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว");
+        this.loading = true;
+          setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
         this.$router.push('/showprojectcom');
       },
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Company') {
           alert("คุณไม่มีสิทธิ์เข้าถึง")
+           setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
           this.$router.push("/")
         }
       },
+       settimeOut() {
+                setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
+            },
     },
     created() {
+      this.settimeOut();
       this.checkRole();
     }
   }
@@ -232,9 +253,19 @@
 
   /* Body */
   h1 {
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
+
   }
+    @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
+    }
 
   label,
   input {
@@ -250,8 +281,8 @@
     position: relative;
     margin-top: 15px;
     outline: none;
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+     animation: fade 0.3s ease-in-out forwards 0s;
+
   }
 
   div.bgbd {
@@ -262,7 +293,8 @@
     height: 143rem;
     padding: 3rem;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    animation: expand 0.5s ease-in-out forwards 0s;
+     animation: fade 0.3s ease-in-out forwards 0s;
+
 
   }
 

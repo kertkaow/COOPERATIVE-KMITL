@@ -11,7 +11,11 @@ const router = createRouter({
     {path:"/register",component:()=>import("../views/LoginandRegister/RegisterPage.vue")},
    
    
-    
+    {path:"/ExportComponent/",
+    component:()=>import("../views/ExportComponent.vue"),
+    meta:{
+      requiresAuth:true,
+    } },
     //Company
     {path:"/createcompany",
     component:()=>import("../views/Company/CreatecompanyView.vue"),
@@ -46,13 +50,13 @@ const router = createRouter({
 
     //Teacher
     
-    {path:"/AdminCompany",
-    component:()=>import("../views/Teacher/AdminCompany.vue"),
+    {path:"/AdminWatchMemo/:matchingDataId",
+    component:()=>import("../views/Teacher/AdminWatchMemo.vue"),
     meta:{
       requiresAuth:true,
     } },
-    {path:"/AdminFileCompany/:companyDataId",
-    component:()=>import("../views/Teacher/AdminFileCompany.vue"),
+    {path:"/AdminCompany",
+    component:()=>import("../views/Teacher/AdminCompany.vue"),
     meta:{
       requiresAuth:true,
     } },

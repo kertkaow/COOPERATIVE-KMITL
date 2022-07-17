@@ -1,6 +1,9 @@
 <template>
+  <div v-if="loading">
+    <LoadingComponent />
+  </div>
   <!-- The sidebar -->
-  <div class="row">
+  <div v-else class="row">
     <div class="col col-2" style="margin-top:80px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AdminCompany" style="background:#FF6E30;color:white">เเบ่งกลุ่มตามโครงการ/อนุมัติสิทธิ์</a>
@@ -51,8 +54,6 @@
             <td>{{ company.studentQuantityRequire }}</td>
             <td>{{ company.projectDescription }}</td>
             <td>{{ company.projectSkill }}</td>
-
-
             <!-- ระดับบริษัท -->
             <td v-if="company.projectLevel == 3">ดีมาก</td>
             <td v-else-if="company.projectLevel == 2">ดี</td>
@@ -61,12 +62,15 @@
             <!-- สถานะการอนุมัติ -->
             <td v-if="company.approveStatus == true">Approved</td>
             <td v-else>Not Approve</td>
-
             <td>
-                <router-link :to="{path: `/AdminFileCompany/${company.id}`}"
-                    class="text-decoration-none btn btn-secondary">
-                    เอกสารแนบ
-                  </router-link>
+              <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                class="text-decoration-none btn btn-document-uploaded">
+                เอกสารแนบ
+              </router-link>
+              <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
+                class="text-decoration-none btn btn-secondary">
+                เอกสารแนบ
+              </router-link>
               <!-- อนุมัติ -->
               <button v-if="company.approveStatus == ''" @click.prevent="approveCompany(company.id)"
                 class="btn btn-primary approve-delete-btn">
@@ -91,7 +95,6 @@
                 <option value="1">พอใช้</option>
               </select>
             </td>
-
           </tr>
         </tbody>
       </table>
@@ -100,6 +103,7 @@
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     companyCollection
   } from "@/firebase";
@@ -113,8 +117,13 @@
     orderBy
   } from "firebase/firestore";
   export default {
+    components: {
+      // ExportComponent,
+      LoadingComponent
+    },
     data() {
       return {
+        loading: true,
         companyDataId: null,
         approveStatus: false,
         Companys: [],
@@ -140,12 +149,7 @@
           Companys.push(companyData);
         });
         this.Companys = Companys;
-
-
       },
-
-
-
       // Delete Company from Database //
       async deleteCompanyData(companyDataId) {
         if (window.confirm("ต้องการลบข้อมูลใช่หรือไม่?")) {
@@ -153,9 +157,14 @@
           await deleteDoc(companyRef);
           alert("ลบข้อมูลสำเร็จ");
           this.$router.go("/CompanyView");
+           this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
         }
+        
       },
-
       // Add Approve Status //
       async approveCompany(companyDataId) {
         let companyRef = doc(companyCollection, companyDataId);
@@ -178,8 +187,12 @@
             approveStatus: (this.Companys.approveStatus)
           });
           alert(approveMsg + "เรียบร้อยแล้ว");
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
           this.$router.push("/AdminCompany");
-
         }
         return companyRef = doc(companyCollection, companyDataId);
       },
@@ -201,10 +214,16 @@
           alert("คุณไม่มีสิทธิ์เข้าถึง")
           this.$router.push("/")
         }
+      },
+      settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000)
       }
 
     },
     created() {
+      this.settimeOut()
       this.fetchCompanyData();
       this.checkRole();
 
@@ -300,7 +319,8 @@
   table {
     display: inline-block;
     justify-content: center;
-    animation: expandRight 0.8s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
+
     text-align: center;
   }
 
@@ -318,6 +338,34 @@
     border: 0.2rem solid #FF6E30;
     border-radius: 10px;
     color: white;
+  }
+
+
+  .btn-document-uploaded {
+    width: 7rem;
+    justify-content: center;
+    margin: 0.07rem;
+    text-align: center;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    background: #00bd10;
+    border: 2px solid #00bd10;
+    color: white;
+  }
+
+  .btn-document-uploaded:hover {
+    width: 7rem;
+    justify-content: center;
+    margin: 0.07rem;
+    text-align: center;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    background: #009b0d;
+    border: 2px solid #009b0d;
   }
 
   .fade-in {
@@ -347,7 +395,8 @@
     text-decoration: none;
     transition: all .3s;
     user-select: none;
-    animation: expandLeft 0.8s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
+
     -webkit-user-select: none;
 
   }
@@ -393,12 +442,24 @@
     }
   }
 
+  @keyframes fade {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 100;
+    }
+
+  }
+
   .filter-option {
     display: inline-flex;
     margin-left: 1vh;
     border-radius: 10px;
     width: 25vh;
-    animation: fadeInOpacity 0.8s ease-in-out;
+    animation: fade 0.3s ease-in-out 0s;
+
   }
 
   .sidebar {
@@ -409,7 +470,8 @@
     height: auto;
     overflow: auto;
     transition: 0.3s;
-    animation: fade 0.5s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
+
   }
 
   @keyframes fadeInOpacity {

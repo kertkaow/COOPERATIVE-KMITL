@@ -1,6 +1,9 @@
 <template>
+<div v-if="loading">
+<LoadingComponent />
+</div>
   <!-- The sidebar -->
-  <div class="row">
+  <div v-else class="row">
     <div class="col col-2" style="margin-top:60px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AllMatchingView">โครงการสหกิจทั้งหมด</a>
@@ -77,6 +80,7 @@
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue";
   import {
     matchingCollection
   } from "@/firebase";
@@ -86,8 +90,13 @@
     where,
   } from "firebase/firestore";
   export default {
+    components: { 
+      // ExportComponent,
+      LoadingComponent
+    },
     data() {
       return {
+        loading:true,
         MatchingsMentor: [],
       };
     },
@@ -126,9 +135,15 @@
           alert("คุณไม่มีสิทธิ์เข้าถึง")
           this.$router.push("/")
         }
-      }
+      },
+       settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000)
+      },
     },
     created() {
+      this.settimeOut();
       this.fetchMatchingMentorByUserId();
       this.checkRole();
     },
@@ -189,7 +204,9 @@
     margin-left: 0;
     display: inline-block;
     justify-content: center;
-    animation: expandRight 0.8s ease-in-out 0s;
+                   animation: fade 0.3s ease-in-out 0s;
+
+
     text-align: right;
   }
 
@@ -300,7 +317,9 @@
     text-decoration: none;
     transition: all .3s;
     user-select: none;
-    animation: expandLeft 0.8s ease-in-out 0s;
+                   animation: fade 0.3s ease-in-out 0s;
+
+
     -webkit-user-select: none;
 
   }
@@ -381,7 +400,8 @@
     margin-left: 1vh;
     border-radius: 10px;
     width: 25vh;
-    animation: fadeInOpacity 0.8s ease-in-out;
+                 animation: fade 0.3s ease-in-out 0s;
+
   }
 
   .sidebar {
@@ -392,7 +412,8 @@
     height: auto;
     overflow: auto;
     transition: 0.3s;
-    animation: fade 0.5s ease-in-out 0s;
+            animation: fade 0.3s ease-in-out 0s;
+
   }
 
   .sidebar a {

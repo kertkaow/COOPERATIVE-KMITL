@@ -1,4 +1,7 @@
 <template>
+    <div v-if="loading">
+        <LoadingComponent />
+    </div>
     <!-- <div v-if="loading" class="box">
         <div class="loading">
             <span class="circle"></span>
@@ -7,13 +10,12 @@
             <span class="circle"></span>
         </div>
     </div> -->
-
-    <div>
+    <div v-else class="animation">
         <div class="form-group" v-if="Companys">
             <label for="file" class="d-flex justify-content-center mb-3">เอกสารแนบของคุณ</label>
             <div v-if="Companys.fileStatus === true">
-                <a :href="url" class="d-flex justify-center btn edit-btn mb-4" id="myimg"
-                    target="blank">ดาวโหลดเอกสารแนบ</a>
+                <a :href="url" class="d-flex justify-center btn edit-btn mb-4" id="myimg" @click="downloadFileAnimation"
+                    target="">ดาวโหลดเอกสารแนบ</a>
             </div>
             <div class="d-flex" v-if="Companys.fileStatus !== true">
                 <router-link :to="{path: `/CreateFileCompany/${this.companyDataId}`}"
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+    import LoadingComponent from "../LoadingComponent.vue"
     import {
         getStorage,
         ref,
@@ -42,6 +45,10 @@
     } from '@/firebase';
 
     export default {
+        components: {
+            // ExportComponent,
+            LoadingComponent
+        },
         data() {
             return {
                 loading: true,
@@ -54,12 +61,12 @@
             };
         },
         methods: {
-    //           getUserData() {
-    //     this.userProfile.firstName = sessionStorage.getItem("userFirstName");
-    //     this.userProfile.lastName = sessionStorage.getItem("userLastName");
-    //     this.userProfile.email = sessionStorage.getItem("userEmail");
-    //     this.userProfile.roles = sessionStorage.getItem("userRole");
-    //   },
+            //           getUserData() {
+            //     this.userProfile.firstName = sessionStorage.getItem("userFirstName");
+            //     this.userProfile.lastName = sessionStorage.getItem("userLastName");
+            //     this.userProfile.email = sessionStorage.getItem("userEmail");
+            //     this.userProfile.roles = sessionStorage.getItem("userRole");
+            //   },
             getfile() {
                 const storage = getStorage();
                 const listRef = ref(storage, `companyFiles/${this.companyDataId}/`);
@@ -75,6 +82,12 @@
                     }).catch((error) => {
                         alert(error.message);
                     });
+            },
+            downloadFileAnimation() {
+                this.loading = true;
+                setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
             },
             async getDownloadFile() {
                 let companyRef = doc(companyCollection, this.companyDataId);
@@ -93,20 +106,21 @@
                     .catch((error) => {
                         console.log(error);
                     });
+
+
             },
-            // settimeOut() {
-            //     setTimeout(() => {
-            //         this.loading = false;
-            //     }, "1000")
-            // }
+            settimeOut() {
+                setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
+            }
         },
         created() {
             let companyDataId = this.$route.params.companyDataId;
             this.companyDataId = companyDataId;
-            // this.getUserData();
             this.getfile();
             this.getDownloadFile();
-            // this.settimeOut();
+            this.settimeOut();
         },
     }
 </script>
@@ -174,6 +188,21 @@
             transform: translateX(45px)
         }
     } */
+    .animation {
+        animation: fade 0.3s ease-in-out ;
+    }
+
+    @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
+    }
+
 
     .edit-btn {
         width: 11rem;

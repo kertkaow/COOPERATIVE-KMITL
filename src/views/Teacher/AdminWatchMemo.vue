@@ -2,6 +2,7 @@
 <div v-if="loading">
     <LoadingComponent />
   </div>
+
     <div v-else class="row justify-content-center">
         <div class="col-md-6 bgbd">
             <!-- แบบ Forms -->
@@ -21,20 +22,18 @@
                             <div class="Memo-date-Box">
                                 วันที่บันทึก {{ memoList.memoDate }}
                             </div>
+                            <!-- <div class="Memo-edit-Box mx-3">
+                                แก้ไข
+                                </div> -->
+
                         </div>
                         <div class="my-3 memo-title-box">
                             {{ memoList.memoContent}}
                         </div>
                     </div>
                 </div>
-                <div v-else class="d-flex justify-content-center mx-auto mb-3 Memo-edit-Box" style="max-width:300px;">
+                <div v-else class="d-flex justify-content-center mx-auto mb-3 Memo-edit-Box" style="max-width:300px">
                     ยังไม่มีการบันทึก Memo
-                </div>
-                <div class="form-group d-flex justify-content-center">
-                    <router-link :to="{ path: `/DirectorUpdateMemo/${matchingDataId}` }"
-                        class="text-decoration-none btn btn-primary" style="color:white;">
-                        เพิ่ม Memo
-                    </router-link>
                 </div>
             </form>
         </div>
@@ -42,7 +41,7 @@
 </template>
 
 <script>
-  import LoadingComponent from "../LoadingComponent.vue"
+ import LoadingComponent from "../LoadingComponent.vue"
     import {
         matchingCollection
     } from "@/firebase";
@@ -51,7 +50,8 @@
         doc,
     } from "firebase/firestore";
     export default {
-          components: {
+        
+   components: {
       // ExportComponent,
       LoadingComponent
     },
@@ -157,11 +157,11 @@
                 this.MemoData = matchingData.Memo
                 this.CooperativeStatus.projectStatus = matchingData.cooperativeStatus.projectStatus
             },
-                   settimeOut() {
+             settimeOut() {
         setTimeout(() => {
           this.loading = false;
-        }, 1000)
-      }
+        }, "1000")
+      },
         },
         created() {
             let matchingDataId = this.$route.params.matchingDataId;
@@ -187,7 +187,9 @@
 
     /* Body */
     h1 {
-        animation: fade 0.3s ease-in-out forwards 0s;
+      
+              animation: fade 0.3s ease-in-out forwards 0s;
+
     }
 
     label,
@@ -208,7 +210,17 @@
         position: relative;
         margin-top: 15px;
         outline: none;
-             animation: fade 0.3s ease-in-out forwards 0s;
+                animation: fade 0.3s ease-in-out forwards 0s;
+
+    }
+     @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
 
     }
 
@@ -320,8 +332,7 @@
         height: auto;
         padding: 3rem;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-                animation: fade 0.3s ease-in-out forwards 0s;
-
+        animation: fade 0.3s ease-in-out forwards 0s;
     }
 
     .Memo-order-Box {
@@ -377,7 +388,6 @@
         transition: 0.3s;
     }
 
-
     .Memo-Text {
         margin-left: 1px;
         margin-top: 1px;
@@ -413,16 +423,6 @@
         user-select: none;
         -webkit-user-select: none;
     }
-     @keyframes fade {
-    0% {
-      opacity: 0;
-    }
-
-    100% {
-      opacity: 100;
-    }
-
-  }
 
     /* Animation */
     @keyframes slideIn {

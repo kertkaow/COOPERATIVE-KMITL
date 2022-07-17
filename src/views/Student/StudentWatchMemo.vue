@@ -1,5 +1,9 @@
 <template>
-    <div class="row justify-content-center">
+<div v-if="loading">
+    <LoadingComponent />
+  </div>
+
+    <div v-else class="row justify-content-center">
         <div class="col-md-6 bgbd">
             <!-- แบบ Forms -->
             <h1 class="d-flex justify-content-center formtitle-1">ชื่อ : [ {{ Students.firstName }}
@@ -28,9 +32,9 @@
                         </div>
                     </div>
                 </div>
-                    <div v-else class="d-flex justify-content-center mb-3 Memo-edit-Box">
-                        ยังไม่มีการบันทึก Memo
-                    </div>
+                <div v-else class="d-flex justify-content-center mx-auto mb-3 Memo-edit-Box" style="max-width:300px;">
+                    ยังไม่มีการบันทึก Memo
+                </div>
                 <div class="form-group d-flex justify-content-center">
                     <router-link :to="{ path: `/StudentUpdateMemo/${matchingDataId}` }"
                         class="text-decoration-none btn btn-primary" style="color:white;">
@@ -43,6 +47,7 @@
 </template>
 
 <script>
+ import LoadingComponent from "../LoadingComponent.vue"
     import {
         matchingCollection
     } from "@/firebase";
@@ -51,8 +56,14 @@
         doc,
     } from "firebase/firestore";
     export default {
+        
+   components: {
+      // ExportComponent,
+      LoadingComponent
+    },
         data() {
             return {
+                loading:true,
                 matchingDataId: null,
                 matchingDoc: null,
                 Companys: {
@@ -152,10 +163,16 @@
                 this.MemoData = matchingData.Memo
                 this.CooperativeStatus.projectStatus = matchingData.cooperativeStatus.projectStatus
             },
+             settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, "1000")
+      },
         },
         created() {
             let matchingDataId = this.$route.params.matchingDataId;
             this.matchingDataId = matchingDataId;
+            this.settimeOut();
             this.getMatchingData();
         },
     }
@@ -176,8 +193,9 @@
 
     /* Body */
     h1 {
-        transform: translateY(100px);
-        animation: expandForm 0.3s ease-in-out forwards 0s;
+      
+              animation: fade 0.3s ease-in-out forwards 0s;
+
     }
 
     label,
@@ -198,8 +216,18 @@
         position: relative;
         margin-top: 15px;
         outline: none;
-        transform: translateY(100px);
-        animation: expandForm 0.3s ease-in-out forwards 0s;
+                animation: fade 0.3s ease-in-out forwards 0s;
+
+    }
+     @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
     }
 
     .Mvc-pass {
@@ -310,7 +338,7 @@
         height: auto;
         padding: 3rem;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-        animation: expand 0.5s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
     }
 
     .Memo-order-Box {
@@ -363,22 +391,8 @@
         height: auto;
         padding: 0.3rem 0.6rem;
         white-space: normal;
-        cursor: pointer ;
+       
         transition: 0.3s;
-    }
-
-    .Memo-edit-Box:hover {
-        text-align: center;
-        display: inline-block;
-        background: #b32e3b;
-        color: white;
-        font-weight: 500;
-        border-radius: 7px;
-        width: auto;
-        height: auto;
-        padding: 0.3rem 0.6rem;
-        white-space: normal;
-        cursor: pointer ;
     }
 
     .Memo-Text {

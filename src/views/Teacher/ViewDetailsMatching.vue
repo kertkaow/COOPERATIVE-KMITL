@@ -1,5 +1,8 @@
 <template>
-  <div class="row justify-content-center">
+<div v-if="loading">
+    <LoadingComponent />
+  </div>
+  <div v-else class="row justify-content-center">
     <div class="col-md-6 bgbd">
       <!-- แบบ Forms -->
       <h1 class="d-flex justify-content-center formtitle-1">ชื่อ : [ {{ Students.firstName }} {{ Students.lastName }} ]
@@ -141,6 +144,7 @@
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     matchingCollection
   } from "@/firebase";
@@ -149,8 +153,13 @@
     doc
   } from "firebase/firestore";
   export default {
+      components: { 
+      // ExportComponent,
+      LoadingComponent
+    },
     data() {
       return {
+        loading:true,
         matchingDataId: null,
         matchingDoc: null,
         Companys: {
@@ -243,14 +252,16 @@
         this.CooperativeStatus.projectExamdate = matchingData.cooperativeStatus.projectExamdate
         this.CooperativeStatus.Memo = matchingData.cooperativeStatus.Memo
         this.CooperativeStatus.projectStatus = matchingData.cooperativeStatus.projectStatus
-
-
-
       },
-    },
+    settimeOut(){
+          setTimeout(() => {
+  this.loading = false;
+}, 1000)}
+      },
     created() {
       let matchingDataId = this.$route.params.matchingDataId;
       this.matchingDataId = matchingDataId;
+      this.settimeOut();
       this.getMatchingData();
     },
   }
@@ -271,8 +282,7 @@
 
   /* Body */
   h1 {
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+    animation: fade 0.3s ease-in-out forwards 0s;
   }
 
   label,
@@ -294,7 +304,8 @@
     margin-top: 15px;
     outline: none;
     transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
+
   }
 
   .Mvc-pass {
@@ -394,7 +405,8 @@
     height: auto;
     padding: 3rem;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    animation: expand 0.5s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
+
   }
 
   .formtitle-1 {
@@ -430,6 +442,17 @@
 
     100% {
       transform: translateX(0px) scale(1);
+    }
+  }
+
+  
+  @keyframes fade {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 100;
     }
   }
 

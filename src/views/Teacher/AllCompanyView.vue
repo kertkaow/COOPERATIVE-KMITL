@@ -1,6 +1,9 @@
 <template>
+  <div v-if="loading">
+    <LoadingComponent />
+  </div>
   <!-- The sidebar -->
-  <div class="row">
+  <div v-else class="row">
     <div class="col col-2" style="margin-top:64px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AdminCompany">เเบ่งกลุ่มตามโครงการ/อนุมัติสิทธิ์</a>
@@ -116,7 +119,11 @@
               </select>
             </td>
             <td>
-                 <router-link :to="{path: `/AdminFileCompany/${company.id}`}"
+                <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                    class="text-decoration-none btn btn-document-uploaded">
+                    เอกสารแนบ
+                  </router-link>
+                    <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -129,6 +136,7 @@
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     companyCollection,
   } from "@/firebase";
@@ -145,9 +153,13 @@
     getAuth
   } from '@firebase/auth';
   export default {
-
+      components: {
+      // ExportComponent,
+      LoadingComponent
+    },
     data() {
       return {
+        loading:true,
         userDoc: '',
         Companys: [],
         userProfile: {
@@ -192,18 +204,25 @@
         this.Companys.projectMentor = companyData.projectMentor;
         this.Companys.thaiName = companyData.thaiName;
         this.Companys.projectName = companyData.projectName;
-        await updateDoc(companyRef, {
+      
+        if (window.confirm("คุณ [ " + this.userProfile.firstName + " " + this.userProfile.lastName +
+            " ] ต้องการลงชื่อแสดงความประสงค์เป็นอาจารย์ที่ปรึกษาของ  บริษัท " + "[ " + this.Companys.thaiName + " ]" +
+            "  โครงการ : " + "[ " + this.Companys.projectName + " ]" + " ใช่หรือไม่?")) 
+            {
+                await updateDoc(companyRef, {
           'projectMentorSigned': arrayUnion({
             'userId': user.uid,
             'userName': this.userProfile.firstName + " " + this.userProfile.lastName
           })
         });
-        if (window.confirm("คุณ [ " + this.userProfile.firstName + " " + this.userProfile.lastName +
-            " ] ต้องการลงชื่อแสดงความประสงค์เป็นอาจารย์ที่ปรึกษาของ  บริษัท " + "[ " + this.Companys.thaiName + " ]" +
-            "  โครงการ : " + "[ " + this.Companys.projectName + " ]" + " ใช่หรือไม่?")) {
           alert("คุณ " + this.userProfile.firstName + " " + this.userProfile.lastName +
             " ลงชื่อแสดงความประสงค์เป็นอาจารย์ที่ปรึกษาของ  บริษัท " + "[ " + this.Companys.thaiName + " ]" +
             "  โครงการ : " + "[ " + this.Companys.projectName + " ]" + " เรียบร้อยแล้ว");
+             this.loading = true
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
         }
 
       },
@@ -217,18 +236,26 @@
         this.Companys.projectDirector = companyData.projectDirector;
         this.Companys.thaiName = companyData.thaiName;
         this.Companys.projectName = companyData.projectName;
-        await updateDoc(companyRef, {
+       
+        if (window.confirm("คุณ : [ " + this.userProfile.firstName + " " + this.userProfile.lastName +
+            " ] ต้องการลงชื่อแสดงความประสงค์เป็นกรรมการนิเทศสหกิจของบริษัท : [ " + this.Companys.thaiName + " ]" +
+            "  โครงการ : " + "[ " + this.Companys.projectName + " ]" + " ใช่หรือไม่?")) {
+               await updateDoc(companyRef, {
           'projectDirectorSigned': arrayUnion({
             'userId': user.uid,
             'userName': this.userProfile.firstName + " " + this.userProfile.lastName
           })
         });
-        if (window.confirm("คุณ : [ " + this.userProfile.firstName + " " + this.userProfile.lastName +
-            " ] ต้องการลงชื่อแสดงความประสงค์เป็นกรรมการนิเทศสหกิจของบริษัท : [ " + this.Companys.thaiName + " ]" +
-            "  โครงการ : " + "[ " + this.Companys.projectName + " ]" + " ใช่หรือไม่?")) {
+        
           alert("คุณ " + this.userProfile.firstName + " " + this.userProfile.lastName +
             " ลงชื่อแสดงความประสงค์เป็นกรรมการนิเทศสหกิจของ  บริษัท " + "[ " + this.Companys.thaiName + " ]" +
             "  โครงการ : " + "[ " + this.Companys.projectName + " ]" + " เรียบร้อยแล้ว");
+              this.loading = true
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
+          
         }
       },
       // Choose ProjectMentor for Company //
@@ -250,6 +277,12 @@
           });
           alert("เลือกให้อาจารย์ : [ " + name + " ] เป็นอาจารย์ที่ปรึกษา : [ " + companyData.thaiName +
             " ] โครงการ : [ " + companyData.projectName + " ] เรียบร้อยแล้ว");
+             this.loading = true
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
+
         }
       },
       async changeProjectMentor(event, companyDataId) {
@@ -271,8 +304,11 @@
           });
           alert("เลือกให้อาจารย์ : [ " + name + " ] เป็นอาจารย์ที่ปรึกษา : [ " + companyData.thaiName +
             " ] โครงการ : [ " + companyData.projectName + " ] เรียบร้อยแล้ว");
-          this.$router.push("/AdminCompany");
-
+             this.loading = true
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
         }
       },
       // Choose ProjectDirector for Company //
@@ -294,7 +330,11 @@
           });
           alert("เลือกให้อาจารย์ : [ " + name + " ] เป็นกรรมการนิเทศสหกิจ : [ " + companyData.thaiName +
             " ] โครงการ : [ " + companyData.projectName + " ] เรียบร้อยแล้ว");
-          this.$router.push("/AdminCompany");
+           this.loading = true
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
         }
       },
       async changeProjectDirector(event, companyDataId) {
@@ -316,17 +356,53 @@
           });
           alert("เลือกให้อาจารย์ : [ " + name + " ] เป็นกรรมการนิเทศ : [ " + companyData.thaiName +
             " ] โครงการ : [ " + companyData.projectName + " ] เรียบร้อยแล้ว");
+             this.loading = true
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000)
+          this.fetchCompanyData();
         }
       },
+         settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000)
+      }
     },
     created() {
+      this.settimeOut();
       this.fetchCompanyData();
-      this.getUserData()
+      this.getUserData();
     },
   }
 </script>
 
 <style scoped>
+.btn-document-uploaded {
+    width: 7rem;
+    justify-content: center;
+    margin: 0.07rem;
+    text-align: center;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    background: #00bd10;
+    border: 2px solid #00bd10;
+    color: white;
+  }
+  .btn-document-uploaded:hover {
+    width: 7rem;
+    justify-content: center;
+    margin: 0.07rem;
+    text-align: center;
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    background: #009b0d;
+    border: 2px solid #009b0d;
+  }
   .MentorAndDirector {
     max-width: 250px;
   }
@@ -379,7 +455,7 @@
 
   table {
     justify-content: center;
-    animation: expandRight 0.8s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
     text-align: center;
   }
 
@@ -424,7 +500,8 @@
     text-decoration: none;
     transition: all .3s;
     user-select: none;
-    animation: expandLeft 0.8s ease-in-out 0s;
+        animation: fade 0.3s ease-in-out 0s;
+
     -webkit-user-select: none;
   }
 
@@ -473,7 +550,8 @@
     display: inline-flex;
     margin-left: 1vh;
     border-radius: 10px;
-    animation: fadeInOpacity 0.8s ease-in-out;
+        animation: fade 0.3s ease-in-out 0s;
+
   }
 
   .sidebar {
@@ -484,8 +562,20 @@
     height: auto;
     overflow: auto;
     transition: 0.3s;
-    animation: fadeInOpacity 0.5s ease-in-out 0s;
+       animation: fade 0.3s ease-in-out 0s;
+
   }
+    @keyframes fade {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 100;
+    }
+
+  }
+
 
   @keyframes fadeInOpacity {
     0% {

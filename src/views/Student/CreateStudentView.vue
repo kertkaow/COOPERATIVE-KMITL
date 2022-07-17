@@ -1,5 +1,9 @@
 <template>
+ <div v-if="loading">
+    <LoadingComponent />
+  </div>
   <!-- When Student never Submit Form  -->
+  <div v-else>
   <div v-if="this.checkExist.userId !== this.userId" class="row justify-content-center">
     <div class="col-md-6 bgbd">
       <!-- Content goes here -->
@@ -79,9 +83,11 @@
       </form>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     studentCollection,
     companyCollection,
@@ -101,9 +107,13 @@
   } from '@firebase/auth';
 
   export default {
-  
+       components: {
+      // ExportComponent,
+      LoadingComponent
+    },
     data() {
       return {
+        loading:true,
         Companys: [],
         Students: {
           firstName: '',
@@ -187,6 +197,10 @@
         });
         console.log(addStudentData)
         alert("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว");
+        this.loading = true;
+         setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
         this.$router.push('/MyStudentView');
       },
 
@@ -214,6 +228,9 @@
 
         } else {
           this.$router.push("/MyStudentView")
+           setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
         }
       },
       checkRole() {
@@ -222,10 +239,16 @@
           alert("คุณไม่มีสิทธิ์เข้าถึง")
           this.$router.push("/")
         }
-      }
+      },
+        settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, "1000")
+      },
     },
 
     created() {
+      this.settimeOut();
       this.getCompanyData();
       this.getStudentData();
       this.checkStudentData();
@@ -250,8 +273,7 @@
 
   /* Body */
   h1 {
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+    animation: fade 0.3s ease-in-out forwards 0s;
   }
 
   label,
@@ -272,8 +294,8 @@
     position: relative;
     margin-top: 15px;
     outline: none;
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+     animation: fade 0.3s ease-in-out forwards 0s;
+
   }
 
   .Mvc-pass {
@@ -373,7 +395,8 @@
     height: 58rem;
     padding: 3rem;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    animation: expand 0.5s ease-in-out forwards 0s;
+    animation: fade 0.3s ease-in-out forwards 0s;
+
   }
 
   .formtitle-1 {
@@ -412,6 +435,16 @@
     }
   }
 
+ @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
+    }
   @keyframes slideUp {
     0% {
       transform: translateY(200px);

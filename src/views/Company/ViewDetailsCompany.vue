@@ -1,5 +1,8 @@
 <template>
-  <div class="row justify-content-center">
+   <div v-if="loading">
+        <LoadingComponent />
+    </div>
+  <div v-else class="row justify-content-center">
     <div class="col-md-6 bgbd">
       <!-- แบบ Forms -->
       <h1 class="d-flex justify-content-center formtitle-1">บริษัท : [ {{ Companys.thaiName }} ] โครงการ : [
@@ -108,6 +111,7 @@
 </template>
 
 <script>
+    import LoadingComponent from "../LoadingComponent.vue"
   import {
     companyCollection
   } from "@/firebase";
@@ -116,8 +120,13 @@
     doc
   } from "firebase/firestore";
   export default {
+      components: {
+            // ExportComponent,
+            LoadingComponent
+        },
     data() {
       return {
+        loading:true,
         companyDataId: null,
         companyDoc: null,
         Companys: {
@@ -177,10 +186,16 @@
         this.Companys.projectInformantName = companyData.projectInformantName;
         this.Companys.projectInformantPosition = companyData.projectInformantPosition;
       },
+       settimeOut() {
+                setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
+            },
     },
     created() {
       let companyDataId = this.$route.params.companyDataId;
       this.companyDataId = companyDataId;
+      this.settimeOut();
       this.getCompany();
     },
   }
@@ -190,11 +205,19 @@
   * {
     box-sizing: border-box;
   }
+  @keyframes fade {
+        0% {
+            opacity: 0;
+        }
 
+        100% {
+            opacity: 100;
+        }
+
+    }
   /* Body */
   h1 {
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+    animation: fade 0.3s ease-in-out forwards 0s;
   }
 
   label,
@@ -215,8 +238,8 @@
     position: relative;
     margin-top: 15px;
     outline: none;
-    transform: translateY(100px);
-    animation: expandForm 0.3s ease-in-out forwards 0s;
+       animation: fade 0.3s ease-in-out forwards 0s;
+
   }
 
   div.bgbd {
@@ -227,7 +250,8 @@
     height: 125rem;
     padding: 3rem;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    animation: expand 0.5s ease-in-out forwards 0s;
+    animation: fade 0.3s ease-in-out forwards 0s;
+
 
   }
 

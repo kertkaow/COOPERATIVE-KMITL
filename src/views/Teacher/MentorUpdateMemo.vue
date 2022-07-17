@@ -1,5 +1,8 @@
 <template>
-    <div class="row justify-content-center">
+<div v-if="loading">
+    <LoadingComponent />
+  </div>
+    <div v-else class="row justify-content-center">
         <div class="col-md-6 bgbd">
             <!-- แบบ Forms -->
             <h1 class="d-flex justify-content-center formtitle-1">ชื่อ : [ {{ Students.firstName }}
@@ -20,6 +23,7 @@
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue"
     import {
         matchingCollection
     } from "@/firebase";
@@ -30,8 +34,13 @@
         arrayUnion
     } from "firebase/firestore";
     export default {
+         components: {
+      // ExportComponent,
+      LoadingComponent
+    },
         data() {
             return {
+                loading:true,
                 matchingDataId: null,
                 matchingDoc: null,
                 Companys: {
@@ -78,11 +87,11 @@
                     projectStatus: null
                 },
                 Memo: {
-                    writerFirstName:'',
-                    writerLastName:'',
-                    memoDate:''
+                    writerFirstName: '',
+                    writerLastName: '',
+                    memoDate: ''
                 },
-                memoContent:''
+                memoContent: ''
             };
         },
         methods: {
@@ -132,23 +141,33 @@
                 console.log(this.Companys.projectTeacherDirector.userName)
             },
             async updateMemo() {
-                 await updateDoc(this.matchingDoc, {
-            'Memo': arrayUnion({
-            'writeRole': 'อาจารย์ที่ปรึกษา',
-            'memoContent': this.memoContent,
-            'writerName': this.Companys.projectTeacherMentor.userName,
-            'memoDate': new Date().toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'})
-          })
-        });
+                await updateDoc(this.matchingDoc, {
+                    'Memo': arrayUnion({
+                        'writeRole': 'อาจารย์ที่ปรึกษา',
+                        'memoContent': this.memoContent,
+                        'writerName': this.Companys.projectTeacherMentor.userName,
+                        'memoDate': new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        })
+                    })
+                });
                 alert(
                     `เพิ่ม Memo เรียบร้อยแล้ว`
                 );
-                this.$router.back(  )
+                this.$router.back()
+            },
+            settimeOut() {
+                setTimeout(() => {
+                    this.loading = false;
+                }, 1000)
             }
         },
         created() {
             let matchingDataId = this.$route.params.matchingDataId;
             this.matchingDataId = matchingDataId;
+            this.settimeOut();
             this.getMatchingData();
         },
     }
@@ -169,8 +188,7 @@
 
     /* Body */
     h1 {
-        transform: translateY(100px);
-        animation: expandForm 0.3s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
     }
 
     label,
@@ -191,8 +209,8 @@
         position: relative;
         margin-top: 15px;
         outline: none;
-        transform: translateY(100px);
-        animation: expandForm 0.3s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
+
     }
 
     .Mvc-pass {
@@ -292,7 +310,8 @@
         height: auto;
         padding: 3rem;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-        animation: expand 0.5s ease-in-out forwards 0s;
+        animation: fade 0.3s ease-in-out forwards 0s;
+
     }
 
     .Memo-Box {
@@ -344,7 +363,7 @@
         -webkit-user-select: none;
     }
 
-     .Memo-date-Box {
+    .Memo-date-Box {
         text-align: center;
         display: inline-block;
         background: #0095ff;
@@ -356,6 +375,17 @@
         height: auto;
         padding: 0.3rem 0.6rem;
         white-space: normal;
+    }
+
+    @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
     }
 
     /* Animation */

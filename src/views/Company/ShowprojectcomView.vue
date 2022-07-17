@@ -1,5 +1,8 @@
 <template>
-  <div class="row justify-content-center">
+  <div v-if="loading">
+    <LoadingComponent />
+  </div>
+  <div v-else class="row justify-content-center">
     <div class="col-md-12">
       <!-- Display Student Content -->
       <h1 class="mb-4 formtitle-1">ข้อมูลโครงการสหกิจ</h1>
@@ -48,7 +51,11 @@
                   <div v-else>รอการอนุมัติ</div>
                 </td>
                 <td v-if="company.approveStatus !== true">
-                  <router-link :to="{path: `/ShowFileCompany/${company.id}`}"
+                 <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                    class="text-decoration-none btn btn-document-uploaded">
+                    เอกสารแนบ
+                  </router-link>
+                    <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -61,7 +68,11 @@
                   </button>
                 </td>
                 <td v-else>
-                   <router-link :to="{path: `/ShowFileCompany/${company.id}`}"
+                    <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
+                    class="text-decoration-none btn btn-document-uploaded">
+                    เอกสารแนบ
+                  </router-link>
+                    <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -76,6 +87,7 @@
 </template>
 
 <script>
+    import LoadingComponent from "../LoadingComponent.vue"
   import {
     companyCollection
   } from "@/firebase";
@@ -90,9 +102,13 @@
     getAuth
   } from '@firebase/auth';
   export default {
-
+     components: {
+            // ExportComponent,
+            LoadingComponent
+        },
     data() {
       return {
+        loading:true,
         Companys: [],
       };
     },
@@ -115,7 +131,11 @@
           let companyRef = doc(companyCollection, companyDataId);
           await deleteDoc(companyRef);
           alert("ลบข้อมูลสำเร็จ");
-          this.$router.push("/showprojectcom");
+          this.loading = true;
+           setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
+           this.fetchCompanyData();
         }
       },
       checkRole() {
@@ -124,9 +144,15 @@
           alert("คุณไม่มีสิทธิ์เข้าถึง")
           this.$router.push("/")
         }
-      }
+      },
+       settimeOut() {
+                setTimeout(() => {
+                    this.loading = false;
+                }, "1000")
+            }
     },
     async created() {
+      this.settimeOut();
       this.fetchCompanyData();
       this.checkRole();
     },
@@ -157,7 +183,7 @@
     margin-left: 0;
     display: inline-block;
     justify-content: center;
-    animation: expandRight 1s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
     text-align: center;
   }
 
@@ -226,6 +252,7 @@
     border: 2px solid #848484;
   }
 
+   
    .btn-document-uploaded {
     width: 7rem;
     justify-content: center;
@@ -235,11 +262,10 @@
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 0.3rem;
-    background: #00ff15;
-    border: 2px solid #00ff15;
+    background: #00bd10;
+    border: 2px solid #00bd10;
     color: white;
   }
-
   .btn-document-uploaded:hover {
     width: 7rem;
     justify-content: center;
@@ -249,8 +275,8 @@
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 0.3rem;
-    background: #00b30f;
-    border: 2px solid #00b30f;
+    background: #009b0d;
+    border: 2px solid #009b0d;
   }
 
 
@@ -334,8 +360,19 @@
     text-decoration: none;
     transition: all .3s;
     user-select: none;
-    animation: expandLeft 0.8s ease-in-out 0s;
+        animation: fade 0.3s ease-in-out 0s;
+
     -webkit-user-select: none;
 
   }
+   @keyframes fade {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 100;
+        }
+
+    }
 </style>

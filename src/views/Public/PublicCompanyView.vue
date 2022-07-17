@@ -1,10 +1,14 @@
 <template>
-  <div class="row justify-content-center">
+  <div v-if="loading">
+    <LoadingComponent />
+  </div>
+  <div v-else class="row justify-content-center">
     <div class="col-md-11">
       <!-- Display Student Content -->
       <h1 class="mb-2 formtitle-1">รายชื่อโครงการสหกิจ</h1>
       <div>
-        <router-link v-if="userProfile.roles == 'Student'" to="/createstudent" class="btn btn-primary d-flex Info-btn mb-2">ลงทะเบียนสหกิจ</router-link>
+        <router-link v-if="userProfile.roles == 'Student'" to="/createstudent"
+          class="btn btn-primary d-flex Info-btn mb-2">ลงทะเบียนสหกิจ</router-link>
       </div>
       <div class="row">
         <div class="col-md-12">
@@ -45,6 +49,7 @@
 </template>
 
 <script>
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     companyCollection,
   } from "@/firebase";
@@ -55,9 +60,13 @@
   } from 'firebase/firestore'
 
   export default {
-
+    components: {
+      // ExportComponent,
+      LoadingComponent
+    },
     data() {
       return {
+        loading: true,
         userDoc: '',
         Companys: [],
         userProfile: {
@@ -90,8 +99,14 @@
         });
         this.Companys = Companys;
       },
+      settimeOut() {
+        setTimeout(() => {
+          this.loading = false;
+        }, "1000")
+      },
     },
     created() {
+      this.settimeOut();
       this.fetchCompanyData();
       this.getUserData()
     },
@@ -150,12 +165,25 @@
     margin-left: 0;
     display: inline-block;
     justify-content: center;
-    animation: expandRight 0.5s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
+
     text-align: center;
   }
 
   .Info-btn {
-    animation: expandLeft 0.5s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
+
+
+  }
+
+  @keyframes fade {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 100;
+    }
 
   }
 
@@ -199,7 +227,7 @@
     text-decoration: none;
     transition: all .3s;
     user-select: none;
-    animation: expandLeft 0.5s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
     -webkit-user-select: none;
   }
 
