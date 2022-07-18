@@ -44,6 +44,7 @@
   import {
     getAuth,
     createUserWithEmailAndPassword,
+    onAuthStateChanged
   } from "firebase/auth"
   import {
     doc,
@@ -62,7 +63,13 @@
         password: '',
         confirmPassword: '',
         roles: '',
-        errMsg: ''
+        errMsg: '',
+        userProfile: {
+          firstName:'',
+          lastName:'',
+          email:'',
+          roles:''
+        }
       }
     },
     methods: {
@@ -137,6 +144,16 @@
               }
             });
         }
+        const auth = getAuth();
+          onAuthStateChanged(auth, (user) => {
+              if (user) {
+                 const userId = user.uid;
+                 this.getUserData()
+                 console.log(this.getUserData());
+                 sessionStorage.setItem("userId", userId);
+                     
+            }
+              })
       },
         async getUserData() {
             let userRef = doc(usersProfileCollection, sessionStorage.getItem("userId"));

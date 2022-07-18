@@ -234,36 +234,54 @@
         autoTable(doc, {
           html: '#Table'
         }, )
-        doc.autoTable({startY: 15,html: '.tftable', styles : { halign : 'center'}, headStyles :{fillColor : [124, 95, 240]}}); //use headStyles to bring styles to the table head, and alternateRowStyles to color the rows but one yes and one no
-        autoTable(doc, {
-          styles: { font:'THSarabunNew' },
-          head: [
-            [
-              'รหัสนักศึกษา','ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
-              'สถานะปัจจุบัน', 'สถานที่ฝึกงาน', 'นัดสอบโปรเจค', 'สถานะ', 'จัดการ'
-            ]
-          ],
-          headerStyles:{
+         autoTable(doc, {
+            headerStyles:{
             fillColor : [255, 110, 48]
           },
-        })
+            styles: { font:'THSarabunNew' },
+             head: [
+            [
+              'รหัสนักศึกษา','ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
+              'สถานะปัจจุบัน', 'สถานที่ฝึกงาน', 'นัดสอบโปรเจค', 'สถานะ'
+            ]
+            ]
+         })
+
         const Data = this.Matchings
         Data.forEach((items) => {
           this.PrintData = items
-          this.LoopData = [this.PrintData.studentData.studentID, this.PrintData.studentData.firstName, this
-            .PrintData
-            .studentData.lastName, this.PrintData.companyData.thaiName,
-            this.PrintData.companyData.projectName, this.PrintData.companyData.projectName, this.PrintData
-            .companyData
-            .projectTeacherMentor.userName, this.PrintData.companyData.projectTeacherDirector.userName, this
-            .PrintData.cooperativeStatus.projectStatusNow, this.PrintData.companyData.workLocation, this
-            .PrintData.cooperativeStatus.projectExamdate, this.PrintData.cooperativeStatus.projectStatus
-          ]
+          this.LoopData1 = [this.PrintData.studentData.studentID], 
+          this.LoopData2 = [this.PrintData.studentData.firstName], 
+          this.LoopData3 = [this.PrintData.studentData.lastName], 
+          this.LoopData4 = [this.PrintData.companyData.thaiName],
+          this.LoopData5 = [this.PrintData.companyData.projectName], 
+          this.LoopData6 = [this.PrintData.companyData.projectName], 
+          this.LoopData7 = [this.PrintData.companyData.projectTeacherMentor.userName], 
+          this.LoopData8 = [this.PrintData.companyData.projectTeacherDirector.userName], 
+          this.LoopData9 = [this.PrintData.cooperativeStatus.projectStatusNow], 
+          this.LoopData10 = [this.PrintData.companyData.workLocation], 
+          this.LoopData11 = [this.PrintData.cooperativeStatus.projectExamdate], 
+          this.LoopData12 = [this.PrintData.cooperativeStatus.projectStatus]
+          
           autoTable(doc, {
+            headerStyles:{
+            fillColor : [255, 110, 48]
+          },
             styles: { font:'THSarabunNew' },
-            body: [
-              this.LoopData
+             head: [
+            [
+              'รหัสนักศึกษา','ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
+              'สถานะปัจจุบัน', 'สถานที่ฝึกงาน', 'นัดสอบโปรเจค', 'สถานะ'
             ],
+          ],
+            body: [
+              [
+              this.LoopData1,this.LoopData2,this.LoopData3,this.LoopData4,this.LoopData5,this.LoopData6,
+              this.LoopData7,this.LoopData8,this.LoopData9,this.LoopData10,this.LoopData11,this.LoopData12,
+            ],
+            ],
+           
+           
           })
       })
         doc.save('รายชื่อสหกิจศึกษา.pdf')

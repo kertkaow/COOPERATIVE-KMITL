@@ -215,7 +215,7 @@
           CompanySubmitDate: serverTimestamp(),
           userSubmitForm: user.uid
         });
-        console.log(addCompanyData);
+        console.log(addCompanyData)
         alert("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว");
         this.loading = true;
           setTimeout(() => {
@@ -227,9 +227,6 @@
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Company') {
           alert("คุณไม่มีสิทธิ์เข้าถึง")
-           setTimeout(() => {
-                    this.loading = false;
-                }, "1000")
           this.$router.push("/")
         }
       },

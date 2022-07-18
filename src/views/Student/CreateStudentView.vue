@@ -228,9 +228,6 @@
 
         } else {
           this.$router.push("/MyStudentView")
-           setTimeout(() => {
-                    this.loading = false;
-                }, "1000")
         }
       },
       checkRole() {
