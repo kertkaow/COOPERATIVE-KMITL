@@ -99,7 +99,7 @@
   import {
     getDocs,
     query,
-    orderBy
+    orderBy,
   } from "firebase/firestore";
 
   export default {
@@ -118,7 +118,8 @@
         MatchingsCompanyName: [],
         MatchingsMentor: [],
         MatchingsDirector: [],
-        PrintData: null
+        PrintData: null,
+        matchingDoc:null,
       }
     },
     methods: {
@@ -233,19 +234,23 @@
         autoTable(doc, {
           html: '#Table'
         }, )
+        doc.autoTable({startY: 15,html: '.tftable', styles : { halign : 'center'}, headStyles :{fillColor : [124, 95, 240]}}); //use headStyles to bring styles to the table head, and alternateRowStyles to color the rows but one yes and one no
         autoTable(doc, {
-          font: 'THSarabunNew',
+          styles: { font:'THSarabunNew' },
           head: [
             [
-              'ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
+              'รหัสนักศึกษา','ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
               'สถานะปัจจุบัน', 'สถานที่ฝึกงาน', 'นัดสอบโปรเจค', 'สถานะ', 'จัดการ'
             ]
           ],
+          headerStyles:{
+            fillColor : [255, 110, 48]
+          },
         })
         const Data = this.Matchings
         Data.forEach((items) => {
           this.PrintData = items
-          const PrintLoopData = [this.PrintData.studentData.studentID, this.PrintData.studentData.firstName, this
+          this.LoopData = [this.PrintData.studentData.studentID, this.PrintData.studentData.firstName, this
             .PrintData
             .studentData.lastName, this.PrintData.companyData.thaiName,
             this.PrintData.companyData.projectName, this.PrintData.companyData.projectName, this.PrintData
@@ -255,14 +260,14 @@
             .PrintData.cooperativeStatus.projectExamdate, this.PrintData.cooperativeStatus.projectStatus
           ]
           autoTable(doc, {
-            font: 'THSarabunNew',
+            styles: { font:'THSarabunNew' },
             body: [
-              PrintLoopData
+              this.LoopData
             ],
           })
-        })
+      })
         doc.save('รายชื่อสหกิจศึกษา.pdf')
-      }
+    }
     },
     created() {
       this.settimeOut();
@@ -270,7 +275,7 @@
       this.checkRole();
     },
 
-  };
+  }
 </script>
 
 

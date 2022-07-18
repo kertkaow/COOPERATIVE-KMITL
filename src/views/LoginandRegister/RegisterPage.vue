@@ -47,7 +47,8 @@
   } from "firebase/auth"
   import {
     doc,
-    setDoc
+    setDoc,
+    getDoc
   } from "firebase/firestore";
   import {
     usersProfileCollection
@@ -103,12 +104,13 @@
           createUserWithEmailAndPassword(auth, this.email, this.password)
             .then((userCredential) => {
               setDoc(doc(usersProfileCollection, userCredential.user.uid), {
-                 firstName: this.firstName,
-                  lastName: this.lastName,
-                  roles: 'Company',
-                  email: this.email,
-                  userId: userCredential.user.uid
+                firstName: this.firstName,
+                lastName: this.lastName,
+                roles: 'Company',
+                email: this.email,
+                userId: userCredential.user.uid
               });
+              this.getUserData();
               alert("ลงทะเบียนบริษัทเรียบร้อย");
               this.$router.push("/");
             })
@@ -135,10 +137,19 @@
               }
             });
         }
-      }
+      },
+        async getUserData() {
+            let userRef = doc(usersProfileCollection, sessionStorage.getItem("userId"));
+            this.userDoc = userRef;
+            let userProfile = await getDoc(this.userDoc);
+            let userData = userProfile.data();
+            sessionStorage.setItem("userFirstName", userData.firstName);
+            sessionStorage.setItem("userLastName", userData.lastName);
+            sessionStorage.setItem("userEmail", userData.email);
+            sessionStorage.setItem("userRole", userData.roles);
+         }
+    },
     }
-
-  }
 </script>
 
 
