@@ -153,9 +153,10 @@ import LoadingComponent from "../LoadingComponent.vue"
                         })
                     })
                 });
-                alert(
-                    `เพิ่ม Memo เรียบร้อยแล้ว`
-                );
+                 this.$toast.success("เพิ่ม Memo เรียบร้อยแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+            })
                 this.$router.back()
             },
              settimeOut() {

@@ -216,7 +216,10 @@
           userSubmitForm: user.uid
         });
         console.log(addCompanyData)
-        alert("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว");
+        this.$toast.success("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+      })
         this.loading = true;
           setTimeout(() => {
                     this.loading = false;
@@ -226,7 +229,10 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Company') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+            this.$toast.success("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+      })
           this.$router.push("/")
         }
       },

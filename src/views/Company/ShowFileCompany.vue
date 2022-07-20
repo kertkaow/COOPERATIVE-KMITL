@@ -80,7 +80,10 @@
                             this.downloadName = itemRef.name;
                         });
                     }).catch((error) => {
-                        alert(error.message);
+                          this.$toast.error(error.message, {
+        timeout: 2500,
+        position:'top-right',
+            })
                     });
             },
             downloadFileAnimation() {

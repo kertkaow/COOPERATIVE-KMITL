@@ -130,7 +130,10 @@
         if (window.confirm("ต้องการลบข้อมูลใช่หรือไม่?")) {
           let companyRef = doc(companyCollection, companyDataId);
           await deleteDoc(companyRef);
-          alert("ลบข้อมูลสำเร็จ");
+           this.$toast.success("ลบข้อมูลสำเร็จ", {
+        timeout: 2500,
+        position:'top-right',
+            })
           this.loading = true;
            setTimeout(() => {
                     this.loading = false;
@@ -141,7 +144,10 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Company') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+            this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+            })
           this.$router.push("/")
         }
       },

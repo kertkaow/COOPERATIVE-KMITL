@@ -228,7 +228,10 @@
         if (window.confirm("ต้องการลบข้อมูลใช่หรือไม่?")) {
           let studentRef = doc(studentCollection, studentDataId);
           await deleteDoc(studentRef);
-          alert("ลบข้อมูลสำเร็จ");
+           this.$toast.success("ลบข้อมูลสำเร็จ", {
+        timeout: 2500,
+        position:'top-right',
+          })
              this.loading = true
           setTimeout(() => {
             this.loading = false;
@@ -309,8 +312,10 @@
           await updateDoc(studentRef, {
             gotCompany: true
           });
-           alert("เลือกบริษัทให้นักศึกษาชื่อ : [ " + studentData.firstName + " " + studentData.lastName +
-            " ] รหัสนักศึกษา : [ " + studentData.studentID + " ] เรียบร้อยแล้ว")
+              this.$toast.success("เลือกบริษัทเรียบร้อยแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+          })
                this.loading = true
           setTimeout(() => {
             this.loading = false;
@@ -339,8 +344,10 @@
           await updateDoc(studentRef, {
             'companyConfirm': true
           });
-          alert("ยืนยันบริษัทของนักศึกษาชื่อ : [ " + studentData.firstName + " " + studentData.lastName +
-            " ] รหัสนักศึกษา : [ " + studentData.studentID + " ] เรียบร้อยแล้ว")
+              this.$toast.success("เลือกบริษัทเรียบร้อยแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.loading = true
           setTimeout(() => {
             this.loading = false;
@@ -385,7 +392,10 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Teacher') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+           this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.$router.push("/")
         }
       },

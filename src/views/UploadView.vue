@@ -318,7 +318,10 @@
                         userSubmitForm: user.uid
                     });
                     console.log(addCompanyData);
-                    alert("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว");
+                    this.$toast.success("ลงทะเบียนสหกิจศึกษาเรียบร้อยแล้ว", {
+                  timeout: 2500,
+                  position:'top-right',
+                })
                     this.$router.push('/showprojectcom');
 
 

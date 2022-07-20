@@ -88,7 +88,10 @@
                 email: this.email,
                 userId: userCredential.user.uid
               });
-              alert("ลงทะเบียนนักศึกษาเรียบร้อย");
+              this.$toast.success("ลงทะเบียนนักศึกษาเรียบร้อย", {
+        timeout: 2500,
+        position:'top-right',
+            })
               this.$router.push("/");
             })
         } else if (this.email.includes("@kmitl.ac.th")) {
@@ -102,7 +105,10 @@
                 email: this.email,
                 userId: userCredential.user.uid
               });
-              alert("ลงทะเบียนอาจารย์เรียบร้อย");
+               this.$toast.success("ลงทะเบียนอาจารย์เรียบร้อย", {
+        timeout: 2500,
+        position:'top-right',
+            })
               this.$router.push("/");
             })
 
@@ -118,7 +124,10 @@
                 userId: userCredential.user.uid
               });
               this.getUserData();
-              alert("ลงทะเบียนบริษัทเรียบร้อย");
+                 this.$toast.success("ลงทะเบียนบริษัทเรียบร้อย", {
+        timeout: 2500,
+        position:'top-right',
+            })
               this.$router.push("/");
             })
             .catch((error) => {
@@ -140,7 +149,10 @@
                   this.errMsg = "รหัสผ่านง่ายเกินไป"
                   break
                 default:
-                  alert("มีบางอย่างผิดพลาด")
+                    this.$toast.error("มีบางอย่างผิดพลาด", {
+        timeout: 2500,
+        position:'top-right',
+            })
               }
             });
         }

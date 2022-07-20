@@ -204,7 +204,10 @@
             gotCompany: false,
             companyConfirm: false
           })
-          alert("ลบข้อมูลสำเร็จ");
+             this.$toast.success("ลบข้อมูลสำเร็จ", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
@@ -261,7 +264,10 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Teacher') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+           this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.$router.push("/")
         }
       }

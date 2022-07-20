@@ -109,7 +109,10 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Student') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+          this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+            })
           this.$router.push("/")
         }
       }

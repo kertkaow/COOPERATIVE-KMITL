@@ -194,7 +194,10 @@ router.beforeEach(async (to,from,next)=>{
     if (await getCurrentUser()){
       next()
     }else{
-      alert("คุณไม่มีสิทธิ์เข้าถึง")
+      this.$toast.success("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+      })
       next("/")
     }
   }else{

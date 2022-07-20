@@ -150,9 +150,11 @@ import LoadingComponent from "../LoadingComponent.vue"
           ...this.Students,
           SubmitDateTime: serverTimestamp()
         });
-        alert(
-          `อัพเดตข้อมูลเรียบร้อยแล้ว`
-        );
+      
+         this.$toast.success("อัพเดตข้อมูลเรียบร้อยแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+          })
         this.$router.push("/AdminStudent");
       },
      
@@ -195,7 +197,10 @@ import LoadingComponent from "../LoadingComponent.vue"
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Teacher') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+            this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.$router.push("/")
         }
       },
