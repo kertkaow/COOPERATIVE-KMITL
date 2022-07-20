@@ -2,23 +2,28 @@
     <div v-if="loading">
         <LoadingComponent />
     </div>
-    <!-- <div v-if="loading" class="box">
+    <div v-if="loading" class="box">
         <div class="loading">
             <span class="circle"></span>
             <span class="circle"></span>
             <span class="circle"></span>
             <span class="circle"></span>
         </div>
-    </div> -->
+    </div>
     <div v-else class="animation">
         <div class="form-group" v-if="Companys">
             <label for="file" class="d-flex justify-content-center mb-3">เอกสารแนบของคุณ</label>
-            <div v-if="Companys.fileStatus === true">
-                <a :href="url" class="d-flex justify-center btn edit-btn mb-4" id="myimg"
-                    target="blank">เอกสารแนบ</a>
+            <div>
+            <div  v-for="(url_item,index) in url" :key="index" >
+             <a  :href="url_item" class="d-flex justify-center btn edit-btn mb-4" id="myimg"
+                    target="blank">
+                    <span> เอกสารที่ {{ index + 1 }}</span></a>
             </div>
-            <div class="d-flex" v-if="Companys.fileStatus !== true">
-                <router-link :to="{path: `/CreateFileCompany/${this.companyDataId}`}"
+               
+                    
+            </div>
+            <div class="d-flex">
+                <router-link v-if="user_roles === 'Company'" :to="{path: `/CreateFileCompany/${this.companyDataId}`}"
                     class="mx-auto justify-content-center text-decoration-none btn btn-primary">
                     เพิ่มเอกสารแนบ
                 </router-link>
@@ -54,36 +59,41 @@
                 loading: true,
                 companyDataId: null,
                 listRef: null,
-                url: null,
+                url: [],
                 itemsName: null,
                 Companys: null,
-                downloadName: null
+                downloadName: null,
+                url_name:[],
+                user_roles:null,
             };
         },
+        mounted(){
+            this.user_roles = sessionStorage.getItem("userRole")
+        },
         methods: {
-            //           getUserData() {
-            //     this.userProfile.firstName = sessionStorage.getItem("userFirstName");
-            //     this.userProfile.lastName = sessionStorage.getItem("userLastName");
-            //     this.userProfile.email = sessionStorage.getItem("userEmail");
-            //     this.userProfile.roles = sessionStorage.getItem("userRole");
-            //   },
             getfile() {
                 const storage = getStorage();
-                const listRef = ref(storage, `companyFiles/${this.companyDataId}/`);
-                this.listRef = listRef;
-                listAll(listRef)
+                const itemRef = ref(storage, `companyFiles/${this.companyDataId}/`);
+                this.listRef = itemRef;
+                listAll(itemRef)
                     .then((res) => {
                         res.prefixes.forEach((folderRef) => {
                             this.itemsFloder = folderRef;
                         });
                         res.items.forEach((itemRef) => {
-                            this.downloadName = itemRef.name;
+                        getDownloadURL(itemRef)
+                        .then((url) => {
+                        this.url_name.push(itemRef.name);
+                        this.url.push(url)
+                        const img = document.getElementById("myimg");
+                        img.setAttribute("src", url);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
                         });
                     }).catch((error) => {
-                          this.$toast.error(error.message, {
-        timeout: 2500,
-        position:'top-right',
-            })
+                        alert(error.message);
                     });
             },
             downloadFileAnimation() {
@@ -98,18 +108,6 @@
                 let company = await getDoc(this.companyDoc);
                 let companyData = company.data();
                 this.Companys = companyData;
-                const storage = getStorage();
-                getDownloadURL(ref(storage, `companyFiles/${this.companyDataId}/${companyData.fileName}`))
-                    .then((url) => {
-                        this.url = url;
-                        console.log(url);
-                        const img = document.getElementById("myimg");
-                        img.setAttribute("src", url);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-
 
             },
             settimeOut() {
@@ -206,9 +204,8 @@
 
     }
 
-
     .edit-btn {
-        width: 11rem;
+        width: auto;
         justify-content: center;
         margin: 0.07rem;
         text-align: center;
@@ -222,7 +219,7 @@
     }
 
     .edit-btn:hover {
-        width: 11rem;
+        width: auto;
         justify-content: center;
         margin: 0.07rem;
         text-align: center;

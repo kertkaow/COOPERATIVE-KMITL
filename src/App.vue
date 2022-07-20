@@ -69,7 +69,9 @@ export default {
                 userId:''
       }
     },
-    
+    mounted(){
+      this.getUserData();
+    },
     methods: {
       async getUserData() {
             let userId = sessionStorage.getItem("userId");
@@ -88,7 +90,6 @@ export default {
 },
     },
     async created() {
-      await this.getUserData();
     }
 }
 </script>
@@ -111,9 +112,11 @@ onMounted(()=>{
 const handleSignOut = () =>{
   if (window.confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
   signOut(auth).then(()=>{
-    alert("ออกจากระบบสำเร็จ");
     sessionStorage.clear();
     router.push("/Login");
+     this.$toast.success("ออกจากระบบสำเร็จ", {
+                  timeout: 2500,
+                })
   }
   )
   }

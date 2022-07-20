@@ -25,6 +25,12 @@
         <option value="orderByMentor">อาจารย์ที่ปรึกษา</option>
         <option value="orderByDirector">กรรมการนิเทศ</option>
       </select>
+        <button v-if="edit_status === true" class="btn btn-danger" style="margin-left:12px;" @click="ToggleStatusFalse">
+          ปิดการแก้ไข
+        </button>
+        <button v-else class="btn btn-success " style="margin-left:12px;" @click="ToggleStatusTrue">
+          เปิดการแก้ไข
+        </button>
       <table class="table table-hover">
         <thead class="table table-striped thead-light clm" style="background-color: #FF6E30">
           <tr>
@@ -73,7 +79,7 @@
             <td>{{ Matching.cooperativeStatus.projectStatus }}</td>
 
 
-            <td>
+            <td v-if="edit_status">
               <router-link :to="{ path: `/EditMatchingDetails/${Matching.id}` }"
                 class="text-decoration-none btn edit-btn" style="color:white;">
                 อัพเดต
@@ -100,7 +106,8 @@
   import LoadingComponent from "../LoadingComponent.vue"
   import {
     matchingCollection,
-    studentCollection
+    studentCollection,
+    StatusCollection
   } from "@/firebase";
   import {
     getDocs,
@@ -108,7 +115,9 @@
     deleteDoc,
     query,
     updateDoc,
-    orderBy
+    setDoc,
+    orderBy,
+    getDoc
   } from "firebase/firestore";
 
   export default {
@@ -119,6 +128,7 @@
     data() {
       return {
         loading: true,
+        edit_status:null,
         selectOption: 'orderByStudentID',
         Matchings: [],
         MatchingsStudentID: [],
@@ -127,6 +137,9 @@
         MatchingsMentor: [],
         MatchingsDirector: [],
       }
+    },
+    mounted(){
+      this.getStatus()
     },
     methods: {
       async fetchMatching() {
@@ -270,7 +283,51 @@
           })
           this.$router.push("/")
         }
-      }
+      },
+       async ToggleStatusTrue() {
+        const statusRef = doc(StatusCollection, 'Status')
+        const addStatus = await setDoc(statusRef, {
+          Status: true,
+        });
+        this.addStatus = addStatus
+        this.$toast.success("เปิดการแก้ไขเรียบร้อยแล้ว", {
+          timeout: 2500,
+          position: 'top-right',
+        })
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+        }, "1000")
+        this.getStatus();
+        console.log(this.edit_status)
+        sessionStorage.setItem("status", true)
+
+      },
+      async ToggleStatusFalse() {
+        const statusRef = doc(StatusCollection, 'Status')
+        const addStatus = await setDoc(statusRef, {
+          Status: false,
+        });
+        this.addStatus = addStatus
+        this.$toast.success("ปิดการแก้ไขเรียบร้อยแล้ว", {
+          timeout: 2500,
+          position: 'top-right',
+        })
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+        }, "1000")
+        this.getStatus();
+        console.log(this.edit_status)
+        sessionStorage.setItem("status", false)
+      },
+        async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
+      },
     },
     created() {
       this.settimeOut();
@@ -286,7 +343,7 @@
   .btn {
     margin-right: 0;
     margin-left: 0;
-    width: 7rem;
+    width: 7.5rem;
     justify-content: center;
     margin-left: 0;
     margin-right: 0;
@@ -297,7 +354,7 @@
 
   .edit-btn {
     display: flex;
-    width: 7rem;
+    width: 7.5rem;
     justify-content: center;
     margin: 0.07rem;
     margin-right: auto;
@@ -311,7 +368,7 @@
 
   .edit-btn:hover {
     display: flex;
-    width: 7rem;
+    width: 7.5rem;
     justify-content: center;
     margin: 0.07rem;
     margin-right: auto;

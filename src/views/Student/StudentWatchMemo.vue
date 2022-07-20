@@ -36,7 +36,7 @@
                     ยังไม่มีการบันทึก Memo
                 </div>
                 <div class="form-group d-flex justify-content-center">
-                    <router-link :to="{ path: `/StudentUpdateMemo/${matchingDataId}` }"
+                    <router-link v-if="edit_status" :to="{ path: `/StudentUpdateMemo/${matchingDataId}` }"
                         class="text-decoration-none btn btn-primary" style="color:white;">
                         เพิ่ม Memo
                     </router-link>
@@ -49,7 +49,8 @@
 <script>
  import LoadingComponent from "../LoadingComponent.vue"
     import {
-        matchingCollection
+        matchingCollection,
+        StatusCollection
     } from "@/firebase";
     import {
         getDoc,
@@ -63,6 +64,7 @@
     },
         data() {
             return {
+                edit_status:null,
                 loading:true,
                 matchingDataId: null,
                 matchingDoc: null,
@@ -168,8 +170,16 @@
           this.loading = false;
         }, "1000")
       },
+        async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
+      },
         },
         created() {
+            this.getStatus();
             let matchingDataId = this.$route.params.matchingDataId;
             this.matchingDataId = matchingDataId;
             this.settimeOut();

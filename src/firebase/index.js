@@ -21,6 +21,7 @@ const studentCollection = collection(db, "students");
 const companyCollection = collection(db, "companys");
 const usersProfileCollection = collection(db, "usersProfile");
 const matchingCollection = collection(db, "matching");
+const StatusCollection = collection(db, "status")
 const auth = getAuth(fb);
 
 export {
@@ -28,6 +29,7 @@ export {
   studentCollection,
   companyCollection,
   usersProfileCollection,
+  StatusCollection,
   db,
   fb,
   matchingCollection,

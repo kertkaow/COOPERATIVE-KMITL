@@ -67,7 +67,7 @@
                     class="text-decoration-none btn btn-document-uploaded">
                     เอกสารแนบ
                   </router-link>
-                <router-link v-else :to="{path: `/AdminFileCompany/${company.id}`}"
+                <router-link v-else :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-secondary">
                     เอกสารแนบ
                   </router-link>
@@ -155,7 +155,10 @@
         if (window.confirm("ต้องการลบข้อมูลใช่หรือไม่?")) {
           let companyRef = doc(companyCollection, companyDataId);
           await deleteDoc(companyRef);
-          alert("ลบข้อมูลสำเร็จ");
+           this.$toast.success("ลบข้อมูลสำเร็จ", {
+        timeout: 2500,
+        position:'top-right',
+            })
           this.$router.go("/CompanyView");
            this.loading = true;
           setTimeout(() => {
@@ -186,7 +189,10 @@
           await updateDoc(companyRef, {
             approveStatus: (this.Companys.approveStatus)
           });
-          alert(approveMsg + "เรียบร้อยแล้ว");
+           this.$toast.success(approveMsg + "เรียบร้อยแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+            })
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
@@ -211,7 +217,10 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Teacher') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+          this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.$router.push("/")
         }
       },

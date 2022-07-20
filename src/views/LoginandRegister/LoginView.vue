@@ -43,7 +43,8 @@
     getDoc
   } from 'firebase/firestore'
   import {
-    usersProfileCollection
+    usersProfileCollection,
+    StatusCollection
   } from "@/firebase";
   export default {
     data() {
@@ -59,15 +60,17 @@
         }
       }
     },
-    mounted(){
-        const auth = getAuth();
-         onAuthStateChanged(auth, (user) => {
-          if (user) {
-            const userId = user.uid;
-            this.getUserData()
-            console.log(this.getUserData());
-            sessionStorage.setItem("userId", userId);
-          }})
+    mounted() {
+      this.getStatus();
+      this.getUserData();
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const userId = user.uid;
+          this.getUserData()
+          sessionStorage.setItem("userId", userId);
+        }
+      })
     },
     methods: {
       signIn() {
@@ -94,20 +97,33 @@
         signInWithEmailAndPassword(auth, this.email, this.password)
           .then((userCredential) => {
             const user = userCredential.user;
-            console.log(user)
+            this.userId = user.uid
             this.$router.push('/');
+            this.$toast.success("เข้าสู่ระบบสำเร็จ", {
+                  timeout: 2500,
+                  position:'top-right',
+                })
           })
           .catch((error) => {
             const errorCode = error.code;
             switch (errorCode) {
               case 'auth/user-not-found':
-                alert("ไม่พบผู้ใช้")
+                this.$toast.error("ไม่พบผู้ใช้", {
+                  timeout: 2500,
+                  position:'top-right'
+                })
                 break
               case 'auth/wrong-password':
-                alert("รหัสผ่านผิด")
+                this.$toast.error("รหัสผ่านผิด", {
+                  timeout: 2500,
+                  position:'top-right'
+                })
                 break
               default:
-                alert("มีบางอย่างผิดพลาด")
+                this.$toast.error("มีบางอย่างผิดพลาด", {
+                  timeout: 2500,
+                  position:'top-right'
+                })
             }
 
           });
@@ -125,10 +141,17 @@
         this.userProfile.lastName = sessionStorage.getItem("userLastName");
         this.userProfile.email = sessionStorage.getItem("userEmail");
         this.userProfile.roles = sessionStorage.getItem("userRole");
-      }
+      },
+      async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
+      },
     },
     async created() {
-      this.getUserData();
+  
     },
 
   }

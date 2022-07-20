@@ -56,7 +56,7 @@
                 <td>{{ MatchingMentor.companyData.projectTeacherDirector.userName }}</td>
                 <td>{{ MatchingMentor.cooperativeStatus.projectStatusNow }}</td>
                 <td>
-                  <router-link :to="{ path: `/MentorWatchMemo/${MatchingMentor.id}` }"
+                  <router-link  :to="{ path: `/MentorWatchMemo/${MatchingMentor.id}` }"
                     class="text-decoration-none btn btn-primary" style="color:white;">
                     ดู Memo
                   </router-link>
@@ -65,7 +65,7 @@
                 <td>{{ MatchingMentor.cooperativeStatus.projectExamdate }}</td>
                 <td>{{ MatchingMentor.cooperativeStatus.projectStatus }}</td>
                 <td>
-                  <router-link :to="{ path: `/EditMatchingDetails/${MatchingMentor.id}` }"
+                  <router-link v-if="edit_status" :to="{ path: `/EditMatchingDetails/${MatchingMentor.id}` }"
                     class="text-decoration-none btn edit-btn" style="color:white;">
                     อัพเดต
                   </router-link>
@@ -82,12 +82,15 @@
 <script>
   import LoadingComponent from "../LoadingComponent.vue";
   import {
-    matchingCollection
+    matchingCollection,
+    StatusCollection
   } from "@/firebase";
   import {
     getDocs,
     query,
     where,
+    doc,
+    getDoc
   } from "firebase/firestore";
   export default {
     components: { 
@@ -99,6 +102,9 @@
         loading:true,
         MatchingsMentor: [],
       };
+    },
+    mounted(){
+       this.edit_status = sessionStorage.getItem("status")
     },
     methods: {
       async fetchMatchingMentorByUserId() {
@@ -113,7 +119,6 @@
           MatchingsMentor.push(matchingData);
         });
         this.MatchingsMentor = MatchingsMentor;
-        console.log(MatchingsMentor)
       },
       async fetchMatchingDirectorByUserId() {
         const userId = sessionStorage.getItem("userId")
@@ -132,9 +137,19 @@
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Teacher') {
-          alert("คุณไม่มีสิทธิ์เข้าถึง")
+              this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+        timeout: 2500,
+        position:'top-right',
+          })
           this.$router.push("/")
         }
+      },
+         async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
       },
        settimeOut() {
         setTimeout(() => {
@@ -143,6 +158,7 @@
       },
     },
     created() {
+      this.getStatus();
       this.settimeOut();
       this.fetchMatchingMentorByUserId();
       this.checkRole();

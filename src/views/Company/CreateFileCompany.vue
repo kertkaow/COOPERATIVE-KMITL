@@ -1,8 +1,8 @@
 <template>
- <div v-if="loading">
+  <div v-if="loading">
     <LoadingComponent />
   </div>
-  <div v-else  class="form-group">
+  <div v-else class="form-group">
     <label for="file">*หมายเหตุ รายละเอียดของโครงการสามารถเป็นเอกสารแนบมาได้
       และในกรณีที่บริษัทนำเสนอโครงการสหกิจเป็นครั้งแรกให้กับภาควิชาวิทยาการคอมพิวเตอร์
       คณะวิทยาศาสตร์ สจล.
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import LoadingComponent from "../LoadingComponent.vue"
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     storage,
     companyCollection
@@ -31,14 +31,14 @@ import LoadingComponent from "../LoadingComponent.vue"
     getDoc,
   } from "firebase/firestore";
   export default {
-     components: {
+    components: {
       // ExportComponent,
       LoadingComponent
     },
 
     data() {
       return {
-        loading:true,
+        loading: true,
         uploadTask: null,
         progress: 0,
         companyDataId: null,
@@ -54,59 +54,73 @@ import LoadingComponent from "../LoadingComponent.vue"
         this.companyDoc = companyRef
         let company = await getDoc(this.companyDoc);
         let companyData = company.data();
-        console.log(companyData)
-        await updateDoc(companyRef, {
-          'fileName': this.uploadTask.name
-        });
+        this.companyData = companyData
+
       },
-      onUpload() {
-        const storageRef = ref(storage, `companyFiles/${this.companyDataId}/` + this.uploadTask.name);
-        this.uploadTask = uploadBytesResumable(storageRef, this.uploadTask)
-        this.uploadTask.on('state_changed', (snapshot) => {
-            this.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            switch (snapshot.state) {
-              case 'paused':
-                break;
-              case 'running':
-                break;
-            }
-            this.uploadFileStatus()
-             this.$toast.success("อัพโหลดไฟล์เรียบร้อย", {
-        timeout: 2500,
-        position:'top-right',
-            })
-            this.$router.push('/showprojectcom');
-          },
-          (error) => {
-            console.log(error)
-          },
-          () => {
-            (this.uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log('File available at', downloadURL);
-            });
-          }, )
-      },
-      async uploadFileStatus() {
-        let companyRef = doc(companyCollection, this.companyDataId);
+
+      async onUpload() {
+        if (this.uploadTask !== null || this.uploadTask !== '') {
+            let companyRef = doc(companyCollection, this.companyDataId);
         this.companyDoc = companyRef
         let company = await getDoc(this.companyDoc);
         let companyData = company.data();
         console.log(companyData)
         await updateDoc(companyRef, {
-          'fileStatus': true,
+          'fileStatus': true
         });
+          const storageRef = ref(storage, `companyFiles/${this.companyDataId}/` + this.uploadTask.name);
+          this.uploadTask = uploadBytesResumable(storageRef, this.uploadTask)
+          this.uploadTask.on('state_changed', (snapshot) => {
+              this.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              switch (snapshot.state) {
+                case 'paused':
+                  break;
+                case 'running':
+                  break;
+              }
+              this.$router.push('/showprojectcom');
+            },
+            (error) => {
+              this.$toast.error(error, {
+                timeout: 2500,
+                position: 'top-right',
+              })
+            },
+            () => {
+              (this.uploadTask.snapshot.ref).then((downloadURL) => {
+                this.$toast.error('File available at', downloadURL, {
+                  timeout: 2500,
+                  position: 'top-right',
+                })
+              });
+            }, )
+
+          this.$toast.success("อัพโหลดไฟล์เอกสารแนบเรียบร้อยแล้ว", {
+            timeout: 2500,
+            position: 'top-right',
+          })
+        } else {
+          this.$toast.error("กรุณาเลือกไฟล์", {
+            timeout: 2500,
+            position: 'top-right',
+          })
+        }
+      },
+      async uploadFileStatus() {
+      
+
       },
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Company') {
-            this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
-        timeout: 2500,
-        position:'top-right',
-            })
+          this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
+            timeout: 2500,
+            position: 'top-right',
+          })
           this.$router.push("/")
         }
       },
-       settimeOut() {
+      settimeOut() {
         setTimeout(() => {
           this.loading = false;
         }, "1000")
@@ -122,21 +136,21 @@ import LoadingComponent from "../LoadingComponent.vue"
 </script>
 
 <style>
-.form-group {
+  .form-group {
     animation: fade 0.3s ease-in-out forwards 0s;
 
-}
+  }
 
 
 
- @keyframes fade {
-        0% {
-            opacity: 0;
-        }
-
-        100% {
-            opacity: 100;
-        }
-
+  @keyframes fade {
+    0% {
+      opacity: 0;
     }
+
+    100% {
+      opacity: 100;
+    }
+
+  }
 </style>

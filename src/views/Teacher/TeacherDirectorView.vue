@@ -8,7 +8,7 @@
       <div class="sidebar">
         <a href="/AllMatchingView">โครงการสหกิจทั้งหมด</a>
         <a href="/TeacherMentorView">อาจารย์ที่ปรึกษา</a>
-        <a href="/active" style="background-color: #FF6E30;color:#FFFF">กรรมการนิเทศ</a>
+        <a href="/TeacherDirectorView" style="background-color: #FF6E30;color:#FFFF">กรรมการนิเทศ</a>
       </div>
     </div>
     <div class="col-10">
@@ -56,7 +56,7 @@
                 <td>{{ MatchingDirector.companyData.projectTeacherDirector.userName }}</td>
                 <td>{{ MatchingDirector.cooperativeStatus.projectStatusNow }}</td>
                 <td>
-                  <router-link :to="{ path: `/DirectorWatchMemo/${MatchingDirector.id}` }"
+                  <router-link  :to="{ path: `/DirectorWatchMemo/${MatchingDirector.id}` }"
                     class="text-decoration-none btn btn-primary" style="color:white;">
                     ดู Memo
                   </router-link>
@@ -67,7 +67,7 @@
 
 
                 <td>
-                  <router-link :to="{ path: `/EditMatchingDetails/${MatchingDirector.id}` }"
+                  <router-link v-if="edit_status" :to="{ path: `/EditMatchingDetails/${MatchingDirector.id}` }"
                     class="text-decoration-none" style="color:white;">
                     <button class="btn edit-btn"> อัพเดต </button>
                   </router-link>
@@ -84,12 +84,15 @@
 <script>
   import LoadingComponent from "../LoadingComponent.vue";
   import {
-    matchingCollection
+    matchingCollection,
+    StatusCollection
   } from "@/firebase";
   import {
     getDocs,
     query,
     where,
+    doc,
+    getDoc
   } from "firebase/firestore";
 
   export default {
@@ -116,7 +119,6 @@
           MatchingsMentor.push(matchingData);
         });
         this.MatchingsMentor = MatchingsMentor;
-        console.log(MatchingsMentor)
       },
       async fetchMatchingDirectorByUserId() {
         const userId = sessionStorage.getItem("userId")
@@ -130,7 +132,6 @@
           MatchingsDirector.push(matchingData);
         });
         this.MatchingsDirector = MatchingsDirector;
-        console.log(MatchingsDirector)
       },
       settimeOut() {
         setTimeout(() => {
@@ -146,9 +147,17 @@
           })
           this.$router.push("/")
         }
-      }
+      },
+        async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
+      },
     },
     created() {
+      this.getStatus();
       this.settimeOut();
       this.fetchMatchingDirectorByUserId();
       this.checkRole();

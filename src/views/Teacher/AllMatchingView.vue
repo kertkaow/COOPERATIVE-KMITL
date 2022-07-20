@@ -37,7 +37,7 @@
         <option value="orderByDirector">กรรมการนิเทศ</option>
       </select>
       <div class="">
-        <button class="btn btn-primary " @click="printReport">
+        <button class="btn btn-primary " v-if="edit_status !== true" @click="printReport">
           Print Report
         </button>
       </div>
@@ -95,11 +95,14 @@
   // import ExportComponent from "../ExportComponent.vue";
   import {
     matchingCollection,
+    StatusCollection
   } from "@/firebase";
   import {
     getDocs,
     query,
     orderBy,
+    doc,
+    getDoc
   } from "firebase/firestore";
 
   export default {
@@ -119,9 +122,11 @@
         MatchingsMentor: [],
         MatchingsDirector: [],
         PrintData: null,
-        matchingDoc:null,
+        matchingDoc: null,
+        Memo:[]
       }
     },
+    mounted() {},
     methods: {
       async fetchMatching() {
         const getMatchingDataByStudentUserId = query(matchingCollection, orderBy("studentData.studentID", "asc"));
@@ -133,11 +138,12 @@
           MatchingsStudentID.push(matchingData);
         });
         this.Matchings = MatchingsStudentID;
+        MatchingsStudentID.forEach((items => {
+             items.Memo.forEach((itemsFor => {
+              this.Memo.push(itemsFor)
+             }))
+        }))
         this.MatchingsStudentID = MatchingsStudentID;
-        // this.Matchings.forEach((items) => {
-        //   this.PrintData = items
-        //   console.log(this.PrintData)
-        // })
 
         const orderByUserFirstName = query(matchingCollection, orderBy("studentData.firstName", "asc"))
         const studentDateSnapShot = await getDocs(orderByUserFirstName);
@@ -212,17 +218,25 @@
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Teacher') {
           this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
-        timeout: 2500,
-        position:'top-right',
+            timeout: 2500,
+            position: 'top-right',
           })
           this.$router.push("/")
         }
+      },
+      async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
       },
       settimeOut() {
         setTimeout(() => {
           this.loading = false;
         }, 1000)
       },
+
       printReport() {
         this.loading = true
         setTimeout(() => {
@@ -237,60 +251,279 @@
         autoTable(doc, {
           html: '#Table'
         }, )
-         autoTable(doc, {
-            headerStyles:{
-            fillColor : [255, 110, 48]
-          },
-            styles: { font:'THSarabunNew' },
-             head: [
-            [
-              'รหัสนักศึกษา','ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
-              'สถานะปัจจุบัน', 'สถานที่ฝึกงาน', 'นัดสอบโปรเจค', 'สถานะ'
-            ]
-            ]
-         })
-
+        
         const Data = this.Matchings
         Data.forEach((items) => {
           this.PrintData = items
-          this.LoopData1 = [this.PrintData.studentData.studentID], 
-          this.LoopData2 = [this.PrintData.studentData.firstName], 
-          this.LoopData3 = [this.PrintData.studentData.lastName], 
-          this.LoopData4 = [this.PrintData.companyData.thaiName],
-          this.LoopData5 = [this.PrintData.companyData.projectName], 
-          this.LoopData6 = [this.PrintData.companyData.projectName], 
-          this.LoopData7 = [this.PrintData.companyData.projectTeacherMentor.userName], 
-          this.LoopData8 = [this.PrintData.companyData.projectTeacherDirector.userName], 
-          this.LoopData9 = [this.PrintData.cooperativeStatus.projectStatusNow], 
-          this.LoopData10 = [this.PrintData.companyData.workLocation], 
-          this.LoopData11 = [this.PrintData.cooperativeStatus.projectExamdate], 
-          this.LoopData12 = [this.PrintData.cooperativeStatus.projectStatus]
-          
+          this.studentID = [this.PrintData.studentData.studentID],
+            this.studentFirstName = [this.PrintData.studentData.firstName],
+            this.studentLastName = [this.PrintData.studentData.lastName],
+            this.studentEmail = [this.PrintData.studentData.email],
+            this.studentGPM = [this.PrintData.studentData.gpm],
+            this.studentMVC = [this.PrintData.studentData.mvcStatus],
+            this.userId = [this.PrintData.studentData.userId],
+            this.firstChoiceName = [this.PrintData.studentData.firstChoice.companyNameAndProjectName]
+          this.firstChoiceResult = [this.PrintData.studentData.firstChoice.result]
+          this.secondChoiceName = [this.PrintData.studentData.secondChoice.companyNameAndProjectName]
+          this.secondChoiceResult = [this.PrintData.studentData.secondChoice.result]
+          this.thirdChoiceName = [this.PrintData.studentData.thirdChoice.companyNameAndProjectName]
+          this.thirdChoiceResult = [this.PrintData.studentData.thirdChoice.result]
+          this.MemoData = this.PrintData.Memo
+          this.PrintData.companyData.projectDirectorSigned.forEach((directorSigned) => {
+            this.companyDirectorSigned = directorSigned.userName
+          })
+          this.companyThaiName = [this.PrintData.companyData.thaiName],
+            this.companyEngName = [this.PrintData.companyData.engName],
+            this.companyAddress = [this.PrintData.companyData.address],
+            this.companyApprove = [this.PrintData.companyData.approveStatus],
+            this.companyProjectLevel = [this.PrintData.companyData.projectLevel]
+          this.companyContact = [this.PrintData.companyData.contact]
+          this.companyEmail = [this.PrintData.companyData.email]
+          this.companyManagerDepartment = [this.PrintData.companyData.managerDepartment]
+          this.companyManagerEmail = [this.PrintData.companyData.managerEmail]
+          this.companyManagerName = [this.PrintData.companyData.managerName]
+          this.companyManagerPhone = [this.PrintData.companyData.managerPhone]
+          this.companyManagerPosition = [this.PrintData.companyData.managerPosition]
+          this.companyPhone = [this.PrintData.companyData.phone]
+          this.companyProjectDescription = [this.PrintData.companyData.projectDescription]
+          this.companyProjectSkill = [this.PrintData.companyData.projectSkill]
+          this.companyProjectObjective = [this.PrintData.companyData.projectObjective]
+          this.companyProjectPeriod = [this.PrintData.companyData.projectPeriod]
+          this.companyProjectSalary = [this.PrintData.companyData.projectSalary]
+          this.companyWorkLocation = [this.PrintData.companyData.workLocation]
+          this.companyProjectInformantName = [this.PrintData.companyData.projectInformantName]
+          this.companyProjectInformantPosition = [this.PrintData.companyData.projectInformantPosition]
+          this.companyProjectMentor = [this.PrintData.companyData.projectMentor]
+          this.companyStudentQuantityRequireProjectSkill = [this.PrintData.companyData.studentQuantityRequire]
+          this.companyUserSubmitForm = [this.PrintData.companyData.userSubmitForm]
+          this.companyTeacherMentor = [this.PrintData.companyData.projectTeacherMentor.userName]
+          this.companyTeacherDirector = [this.PrintData.companyData.projectTeacherDirector.userName]
+
+          this.PrintData.companyData.projectDirectorSigned.forEach((directorSigned) => {
+            this.companyDirectorSigned = directorSigned.userName
+          })
+          this.PrintData.companyData.projectMentorSigned.forEach((mentorSigned) => {
+            this.companyMentorSigned = mentorSigned.userName
+          })
+          this.matchingProjectExamdate = [this.PrintData.cooperativeStatus.projectExamdate]
+          this.matchingProjectStatus = [this.PrintData.cooperativeStatus.projectStatus]
+          this.matchingProjectStatusNow = [this.PrintData.cooperativeStatus.projectStatusNow]
+
           autoTable(doc, {
-            headerStyles:{
-            fillColor : [255, 110, 48]
-          },
-            styles: { font:'THSarabunNew' },
-             head: [
-            [
-              'รหัสนักศึกษา','ชื่อ', 'นามสกุล', 'บริษัท', 'ตำแหน่งงาน', 'โครงการ', 'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศ',
-              'สถานะปัจจุบัน', 'สถานที่ฝึกงาน', 'นัดสอบโปรเจค', 'สถานะ'
+            headerStyles: {
+              fillColor: [0, 0, 0],
+              textColor: [255, 255, 255],
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                this.studentFirstName + " " + this.studentLastName + ' (' + this.studentID + ')'
+              ],
             ],
-          ],
+          })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [255, 110, 48]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'รหัสนักศึกษา', 'ชื่อ', 'นามสกุล', 'อีเมลล์', 'เกรดเฉลี่ย', 'สถานะ MVC', 'user_id',
+              ],
+            ],
             body: [
               [
-              this.LoopData1,this.LoopData2,this.LoopData3,this.LoopData4,this.LoopData5,this.LoopData6,
-              this.LoopData7,this.LoopData8,this.LoopData9,this.LoopData10,this.LoopData11,this.LoopData12,
+                this.studentID,
+                this.studentFirstName,
+                this.studentLastName,
+                this.studentEmail,
+                this.studentGPM,
+                this.studentMVC,
+                this.userId,
+              ],
             ],
-            ],
-           
-           
           })
-      })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [255, 110, 48]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'ตัวเลือกโครงการที่ 1', 'ผลลัพท์', 'ตัวเลือกโครงการที่ 2', 'ผลลัพท์', 'ตัวเลือกโครงการที่ 3',
+                'ผลลัพท์',
+              ],
+            ],
+            body: [
+              [
+                this.firstChoiceName,
+                this.firstChoiceResult,
+                this.secondChoiceName,
+                this.secondChoiceResult,
+                this.thirdChoiceName,
+                this.thirdChoiceResult,
+              ],
+            ],
+
+
+          })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [58, 133, 249]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'ชื่อบริษัท(ไทย)', 'ชื่อบริษัท(อังกฤษ)', 'ที่อยู่', 'สถานะอนุมัติ', 'ระดับบริษัท', 'ติดต่อ',
+                'อีเมลล์', 'เบอร์โทร',
+              ],
+            ],
+            body: [
+              [
+                this.companyThaiName,
+                this.companyEngName,
+                this.companyAddress,
+                this.companyApprove,
+                this.companyProjectLevel,
+                this.companyContact,
+                this.companyEmail,
+                this.companyPhone,
+              ],
+            ],
+          })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [58, 133, 249]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'ชื่อ', 'แผนก', 'ตำแหน่ง', 'อีเมลล์', 'เบอร์โทร',
+              ],
+            ],
+            body: [
+              [
+                this.companyManagerName,
+                this.companyManagerDepartment,
+                this.companyManagerPosition,
+                this.companyManagerEmail,
+                this.companyManagerPhone
+              ],
+            ],
+          })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [58, 133, 249]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'รายละเอียด', 'ทักษะที่ต้องใช้', 'จุดประสงค์โครงการ', 'ระยะเวลา', 'เงินเดือนฝึกงาน',
+                "สถานที่ทำงาน"
+              ],
+            ],
+            body: [
+              [
+                this.companyProjectDescription,
+                this.companyProjectSkill,
+                this.companyProjectObjective,
+                this.companyProjectPeriod,
+                this.companyProjectSalary,
+                this.companyWorkLocation,
+              ],
+            ],
+          })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [58, 133, 249]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'ชื่อผู้ให้ข้อมูล', 'ตำแหน่งผู้ให้ข้อมูล', 'พี่เลี้ยงฝึกงาน', 'จำนวนนักศึกษา',
+                'ผู้ลงข้อมูล(id)'
+              ],
+            ],
+            body: [
+              [
+                this.companyProjectInformantName,
+                this.companyProjectInformantPosition,
+                this.companyProjectMentor,
+                this.companyStudentQuantityRequireProjectSkill,
+                this.companyUserSubmitForm,
+              ],
+            ],
+          })
+          autoTable(doc, {
+            headerStyles: {
+              fillColor: [58, 133, 249]
+            },
+            styles: {
+              font: 'THSarabunNew'
+            },
+            head: [
+              [
+                'อาจารย์ที่ปรึกษา', 'กรรมการนิเทศสหกิจ', 'ผู้แสดงความประสงค์เป็นอาจารย์ที่ปรึกษา',
+                'ผู้แสดงความประสงค์เป็นกรรมการนิเทศสหกิจ',
+              ],
+            ],
+            body: [
+              [
+                this.companyTeacherMentor,
+                this.companyTeacherDirector,
+                this.companyDirectorSigned,
+                this.companyMentorSigned,
+              ],
+            ],
+          })
+          this.Memo.forEach((items => {
+            this.MemoContent = items.memoContent
+            this.MemoDate = items.memoDate
+            this.MemoWriterRole = items.writeRole
+            this.MemoWriterName = items.writerName
+            console.log(items)
+            autoTable(doc, {
+              headerStyles: {
+                fillColor: [55, 177, 37]
+              },
+              styles: {
+                font: 'THSarabunNew'
+              },
+              head: [
+                [
+                  'รายละเอียด Memo', 'วันที่บันทึก Memo', 'ชื่อผู้บันทึก', 'สถานะผู้บันทึก',
+                ],
+              ],
+              body: [
+                [
+                  this.MemoContent,
+                  this.MemoDate,
+                  this.MemoWriterRole,
+                  this.MemoWriterName,
+                ],
+              ],
+            })
+          }))
+        })
         doc.save('รายชื่อสหกิจศึกษา.pdf')
-    }
+      }
     },
     created() {
+      this.getStatus();
       this.settimeOut();
       this.fetchMatching();
       this.checkRole();
@@ -303,10 +536,9 @@
 <style scoped>
   .btn {
     animation: fade 0.3s ease-in-out 0s;
-
     margin-right: 0;
     margin-left: 0;
-    width: 7rem;
+    width: 8rem;
     justify-content: center;
     margin-left: 0;
     margin-right: 0;

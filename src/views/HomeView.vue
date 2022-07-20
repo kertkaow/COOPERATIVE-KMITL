@@ -48,6 +48,9 @@
         userId: ''
       }
     },
+    mounted(){
+      this.getUserData();
+    },
     methods: {
       async getUserData() {
         this.userProfile.firstName = sessionStorage.getItem("userFirstName")
@@ -68,7 +71,6 @@
     },
     async created() {
       this.settimeOut();
-      this.getUserData();
     }
   }
 </script>

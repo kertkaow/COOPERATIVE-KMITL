@@ -51,7 +51,7 @@
                 <td>{{ Matching.cooperativeStatus.projectExamdate }}</td>
                 <td>{{ Matching.cooperativeStatus.projectStatus }}</td>
                 <td>
-                  <router-link :to="{ path: `/Editmemo/${Matching.id}` }" class="text-decoration-none btn edit-btn"
+                  <router-link v-if="edit_status" :to="{ path: `/Editmemo/${Matching.id}` }" class="text-decoration-none btn edit-btn"
                     style="color:white;width:8rem">
                     นัดสอบโปรเจค
                   </router-link>
@@ -68,12 +68,15 @@
 <script>
  import LoadingComponent from "../LoadingComponent.vue"
   import {
-    matchingCollection
+    matchingCollection,
+    StatusCollection
   } from "@/firebase";
   import {
     getDocs,
     query,
-    where
+    where,
+    doc,
+    getDoc
   } from "firebase/firestore";
 
   export default {
@@ -84,6 +87,7 @@
     data() {
       return {
         loading:true,
+        edit_status:null,
         MatchingsStudentID: [],
       }
     },
@@ -99,12 +103,18 @@
           MatchingsStudentID.push(matchingData);
         });
         this.MatchingsStudentID = MatchingsStudentID;
-        console.log(userId)
       },
        settimeOut() {
         setTimeout(() => {
           this.loading = false;
         }, "1000")
+      },
+          async getStatus() {
+        let statusRef = doc(StatusCollection, 'Status');
+        let status = await getDoc(statusRef);
+        let statusData = status.data();
+        sessionStorage.setItem("status", statusData.Status)
+        this.edit_status = statusData.Status
       },
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
@@ -118,6 +128,7 @@
       }
     },
     created() {
+      this.getStatus();
       this.settimeOut();
       this.fetchMatching();
       this.checkRole();
