@@ -18,14 +18,14 @@
       </div> -->
   <!-- The sidebar -->
   <div v-else class="row">
-    <div class="col col-2" style="margin-top:108px;max-width: 220px;">
+    <div class="col col-1.5" style="margin-top:64px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AdminMatching" style="background-color: #FF6E30;color:#FFFF">โครงการสหกิจทั้งหมด</a>
         <a href="/TeacherMentorView">อาจารย์ที่ปรึกษา</a>
         <a href="/TeacherDirectorView">กรรมการนิเทศ</a>
       </div>
     </div>
-    <div class="col col-10">
+    <div class="col col-10.5">
       <!-- Display Student Content -->
       <h1 class="mb-4 formtitle-1">ข้อมูลสหกิจทั้งหมด (Admin)</h1>
       <select class="mb-3 filter-option" @change="selectedOption($event)">
@@ -50,12 +50,10 @@
             <th>ชื่อ</th>
             <th>นามสกุล</th>
             <th>ชื่อบริษัท</th>
-            <th>ตำแหน่งงาน</th>
             <th>โครงการ</th>
             <th>อาจารย์ที่ปรึกษา</th>
             <th>กรรมการนิเทศสหกิจ</th>
             <th>สถานะปัจจุบัน</th>
-            <th>สถานที่ฝึกงาน</th>
             <th>นัดสอบโปรเจค</th>
             <th>สถานะ</th>
           </tr>
@@ -73,11 +71,9 @@
             <td>{{ Matching.studentData.lastName }}</td>
             <td>{{ Matching.companyData.thaiName }}</td>
             <td>{{ Matching.companyData.projectName }}</td>
-            <td>{{ Matching.companyData.projectName }}</td>
             <td>{{ Matching.companyData.projectTeacherMentor.userName }}</td>
             <td>{{ Matching.companyData.projectTeacherDirector.userName }}</td>
             <td>{{ Matching.cooperativeStatus.projectStatusNow }}</td>
-            <td>{{ Matching.companyData.workLocation }}</td>
             <td>{{ Matching.cooperativeStatus.projectExamdate }}</td>
             <td>{{ Matching.cooperativeStatus.projectStatus }}</td>
 

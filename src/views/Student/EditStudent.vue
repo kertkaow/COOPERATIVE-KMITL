@@ -170,7 +170,6 @@ import LoadingComponent from "../LoadingComponent.vue"
           Companys.push(companyData);
         });
         this.Companys = Companys;
-
       },
       // Put Value from option Select field in to Database -- firstChoice //
       onChangeFirstChoice(event) {

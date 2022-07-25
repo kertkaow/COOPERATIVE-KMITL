@@ -126,7 +126,7 @@ const router = createRouter({
       requiresAuth:true,
     } },
     //Student
-    {path:"/createstudent",
+    {path:"/CreateStudent",
     component:()=>import("../views/Student/CreateStudentView.vue"),
     meta:{
       requiresAuth:true,
@@ -167,8 +167,8 @@ const router = createRouter({
       requiresAuth:true,
     } },
     //Public
-    {path:"/PublicCompany",
-    component:()=>import("../views/Public/PublicCompanyView.vue"),
+    {path:"/ProjectView",
+    component:()=>import("../views/Student/ProjectView.vue"),
     meta:{
       requiresAuth:true,
     } },

@@ -6,7 +6,7 @@
        <div class="container">
           <div v-if="this.userProfile.roles == 'Student' " class="row">
             <div class="col col-12 d-flex justify-content-end">
-                  <router-link to="/PublicCompany" v-show="isLoggedIn === true" class="nav-list">รายชื่อโครงการ</router-link>  
+                  <router-link to="/ProjectView" v-show="isLoggedIn === true" class="nav-list">รายชื่อโครงการ</router-link>  
                 <router-link to="/MyStudentView" v-show="isLoggedIn === true" class="nav-list">ดูข้อมูลลงทะเบียนนสหกิจ</router-link>   
                 <router-link to="/Memo" v-show="isLoggedIn === true" class="nav-list">สหกิจของฉัน</router-link>  
           </div>

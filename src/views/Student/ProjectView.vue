@@ -2,47 +2,46 @@
   <div v-if="loading">
     <LoadingComponent />
   </div>
-  <div v-else class="row justify-content-center">
-    <div class="col-md-11">
-      <!-- Display Student Content -->
-      <h1 class="mb-2 formtitle-1">รายชื่อโครงการสหกิจ</h1>
-      <div>
-        <router-link v-if="userProfile.roles == 'Student'" to="/createstudent"
-          class="btn btn-primary d-flex Info-btn mb-2">ลงทะเบียนสหกิจ</router-link>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <table class="table table-hover">
-            <thead class="table table-striped thead-light clm" style="background-color: #FF6E30">
-              <tr>
-                <th>ชื่อบริษัท</th>
-                <th>สถานที่ทำงาน</th>
-                <th>เบอร์โทร</th>
-                <th>ผู้จัดการโครงการ/หัวหน้า</th>
-                <th>ชื่อโครงการ</th>
-                <th>วัตถุประสงค์ของโครงการ</th>
-                <th>ระยะเวลาของโครงการ</th>
-                <th>จำนวนนักศึกษาที่ต้องการ</th>
-                <th>ลักษณะงาน</th>
-                <th>เครื่องมือและทักษะที่ต้องใช้</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="company in Companys" :key="company.id">
-                <td>{{ company.thaiName }}</td>
-                <td>{{ company.workLocation }}</td>
-                <td>{{ company.phone }}</td>
-                <td>{{ company.managerName }}</td>
-                <td>{{ company.projectName }}</td>
-                <td>{{ company.projectObjective }}</td>
-                <td>{{ company.projectPeriod }}</td>
-                <td>{{ company.studentQuantityRequire }}</td>
-                <td>{{ company.projectDescription }}</td>
-                <td>{{ company.projectSkill }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <div v-else class="row justify-content-start">
+    <!-- Display Student Content -->
+    <h1 class="mb-2 formtitle-1">รายชื่อโครงการสหกิจ</h1>
+    <div>
+      <router-link to="/CreateStudent"
+        class="btn btn-primary d-flex Info-btn mb-2">ลงทะเบียนสหกิจ</router-link>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-hover">
+          <thead class="table table-striped thead-light clm" style="background-color: #FF6E30">
+            <tr>
+              <th>รายละเอียด</th>
+              <th>ชื่อบริษัท</th>
+              <th>ชื่อโครงการ</th>
+              <th>วัตถุประสงค์ของโครงการ</th>
+              <th>ระยะเวลาของโครงการ</th>
+              <th>จำนวนนักศึกษาที่ต้องการ</th>
+              <th>ลักษณะงาน</th>
+              <th>เครื่องมือและทักษะที่ต้องใช้</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="company in Companys" :key="company.id">
+              <td>
+                 <router-link :to="{path: `/CompanyDetails/${company.id}`}"
+                    class="mx-auto text-decoration-none btn btn-primary" style="color:white;width: 8rem;">
+                    ดูข้อมูล
+                  </router-link>
+              </td>
+              <td>{{ company.thaiName }}</td>
+              <td>{{ company.projectName }}</td>
+              <td>{{ company.projectObjective }}</td>
+              <td>{{ company.projectPeriod }}</td>
+              <td>{{ company.studentQuantityRequire }}</td>
+              <td>{{ company.projectDescription }}</td>
+              <td>{{ company.projectSkill }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

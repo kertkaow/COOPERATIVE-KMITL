@@ -1,72 +1,69 @@
 <template>
- <div v-if="loading">
+  <div v-if="loading">
     <LoadingComponent />
   </div>
 
-  <div v-else class="row justify-content-center">
-    <div class="col-11">
-      <!-- Display Student Content -->
-      <h1 class="mb-4 formtitle-1">ข้อมูลสหกิจ</h1>
-      <div class="row">
-        <div class="col-12">
-          <table class="table table-hover">
-            <thead class="table table-striped thead-light clm" style="background-color: #FF6E30">
-              <tr>
-
-                <th>รหัสนักศึกษา</th>
-                <th>ชื่อ</th>
-                <th>นามสกุล</th>
-                <th>ชื่อบริษัท</th>
-                <th>ตำแหน่งงาน</th>
-                <th>โครงการ</th>
-                <th>อาจารย์ที่ปรึกษา</th>
-                <th>กรรมการนิเทศสหกิจ</th>
-                <th>สถานะปัจจุบัน</th>
-                <th>Memo</th>
-                <th>สถานที่ฝึกงาน</th>
-                <th>นัดสอบโปรเจค</th>
-                <th>สถานะ</th>
-                <th>จัดการ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="Matching in MatchingsStudentID" :key="Matching.id">
-
-                <td>{{ Matching.studentData.studentID }}</td>
-                <td>{{ Matching.studentData.firstName }}</td>
-                <td>{{ Matching.studentData.lastName }}</td>
-                <td>{{ Matching.companyData.thaiName }}</td>
-                <td>{{ Matching.companyData.projectName }}</td>
-                <td>{{ Matching.companyData.projectName }}</td>
-                <td>{{ Matching.companyData.projectTeacherMentor.userName }}</td>
-                <td>{{ Matching.companyData.projectTeacherDirector.userName }}</td>
-                <td>{{ Matching.cooperativeStatus.projectStatusNow }}</td>
-                <td>
-                  <router-link :to="{ path: `/StudentWatchMemo/${Matching.id}` }"
-                    class="text-decoration-none btn btn-primary" style="color:white;">
-                    ดู Memo
-                  </router-link>
-                </td>
-                <td>{{ Matching.companyData.workLocation }}</td>
-                <td>{{ Matching.cooperativeStatus.projectExamdate }}</td>
-                <td>{{ Matching.cooperativeStatus.projectStatus }}</td>
-                <td>
-                  <router-link v-if="edit_status" :to="{ path: `/Editmemo/${Matching.id}` }" class="text-decoration-none btn edit-btn"
-                    style="color:white;width:8rem">
-                    นัดสอบโปรเจค
-                  </router-link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div v-else class="row">
+    <!-- Display Student Content -->
+    <h1 class="mb-4 formtitle-1">ข้อมูลสหกิจ</h1>
+    <div class="col-12">
+      <table class="table table-hover">
+        <thead class="table table-striped thead-light clm" style="background-color: #FF6E30">
+          <tr>
+            <th>รายละเอียด</th>
+            <th>รหัสนักศึกษา</th>
+            <th>ชื่อ</th>
+            <th>นามสกุล</th>
+            <th>ชื่อบริษัท</th>
+            <th>โครงการ</th>
+            <th>อาจารย์ที่ปรึกษา</th>
+            <th class="col col-2">กรรมการนิเทศสหกิจ</th>
+            <th>สถานะปัจจุบัน</th>
+            <th>Memo</th>
+            <th>นัดสอบโปรเจค</th>
+            <th>สถานะ</th>
+            <th class="col col-1">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="Matching in MatchingsStudentID" :key="Matching.id">
+            <td>
+              <router-link :to="{ path: `/MatchingDetails/${Matching.id}` }" class="text-decoration-none btn btn-primary"
+                style="color:white;width:8rem">
+                ข้อมูลสหกิจ
+              </router-link>
+            </td>
+            <td>{{ Matching.studentData.studentID }}</td>
+            <td>{{ Matching.studentData.firstName }}</td>
+            <td>{{ Matching.studentData.lastName }}</td>
+            <td>{{ Matching.companyData.thaiName }}</td>
+            <td>{{ Matching.companyData.projectName }}</td>
+            <td>{{ Matching.companyData.projectTeacherMentor.userName }}</td>
+            <td>{{ Matching.companyData.projectTeacherDirector.userName }}</td>
+            <td>{{ Matching.cooperativeStatus.projectStatusNow }}</td>
+            <td>
+              <router-link :to="{ path: `/StudentWatchMemo/${Matching.id}` }"
+                class="text-decoration-none btn btn-primary" style="color:white;">
+                ดู Memo
+              </router-link>
+            </td>
+            <td>{{ Matching.cooperativeStatus.projectExamdate }}</td>
+            <td>{{ Matching.cooperativeStatus.projectStatus }}</td>
+            <td>
+              <router-link v-if="edit_status" :to="{ path: `/Editmemo/${Matching.id}` }"
+                class="text-decoration-none btn edit-btn" style="color:white;width:8rem">
+                นัดสอบโปรเจค
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <script>
- import LoadingComponent from "../LoadingComponent.vue"
+  import LoadingComponent from "../LoadingComponent.vue"
   import {
     matchingCollection,
     StatusCollection
@@ -80,14 +77,14 @@
   } from "firebase/firestore";
 
   export default {
-       components: {
+    components: {
       // ExportComponent,
       LoadingComponent
     },
     data() {
       return {
-        loading:true,
-        edit_status:null,
+        loading: true,
+        edit_status: null,
         MatchingsStudentID: [],
       }
     },
@@ -104,12 +101,12 @@
         });
         this.MatchingsStudentID = MatchingsStudentID;
       },
-       settimeOut() {
+      settimeOut() {
         setTimeout(() => {
           this.loading = false;
         }, "1000")
       },
-          async getStatus() {
+      async getStatus() {
         let statusRef = doc(StatusCollection, 'Status');
         let status = await getDoc(statusRef);
         let statusData = status.data();
@@ -120,9 +117,9 @@
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Student') {
           this.$toast.error("คุณไม่มีสิทธิ์เข้าถึง", {
-        timeout: 2500,
-        position:'top-right',
-            })
+            timeout: 2500,
+            position: 'top-right',
+          })
           this.$router.push("/")
         }
       }
@@ -301,7 +298,7 @@
     text-decoration: none;
     transition: all .3s;
     user-select: none;
-        animation: fade 0.3s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
 
     -webkit-user-select: none;
 
@@ -385,23 +382,24 @@
       opacity: 1;
     }
   }
-   @keyframes fade {
-        0% {
-            opacity: 0;
-        }
 
-        100% {
-            opacity: 100;
-        }
-
+  @keyframes fade {
+    0% {
+      opacity: 0;
     }
+
+    100% {
+      opacity: 100;
+    }
+
+  }
 
   .filter-option {
     display: inline-flex;
     margin-left: 1vh;
     border-radius: 10px;
     width: 25vh;
-        animation: fade 0.3s ease-in-out 0s;
+    animation: fade 0.3s ease-in-out 0s;
 
   }
 

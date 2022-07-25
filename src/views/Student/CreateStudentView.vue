@@ -160,6 +160,13 @@
         let checkExist = await getDoc(this.checkExistDoc);
         let checkExistData = checkExist.data();
         this.checkExist = checkExistData
+        if(checkExistData.userId === this.userId) {
+            this.$toast.error("คุณลงทะเบียนสหกิจแล้ว", {
+        timeout: 2500,
+        position:'top-right',
+            })
+          this.$router.push('/MyStudentView')
+        }
       },
 
       async getCompanyData() {
@@ -225,14 +232,6 @@
         var name = event.target.options[event.target.options.selectedIndex].text;
         this.Students.thirdChoice.companyNameAndProjectName = name;
       },
-      userAlreadySubmitForm() {
-        if (this.checkExist == "") {
-          this.$router.push("/createstudent")
-
-        } else {
-          this.$router.push("/MyStudentView")
-        }
-      },
       checkRole() {
         const userRole = sessionStorage.getItem("userRole")
         if (userRole != 'Student') {
@@ -255,7 +254,6 @@
       this.getCompanyData();
       this.getStudentData();
       this.checkStudentData();
-      this.userAlreadySubmitForm();
       this.checkRole();
     }
   }

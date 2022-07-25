@@ -2,8 +2,7 @@
  <div v-if="loading">
     <LoadingComponent />
   </div>
-  <div v-else class="row justify-content-center">
-    <div class="col-11">
+  <div v-else class="row justify-content-start">
       <!-- Display Student Content -->
       <h1 class="mb-4 formtitle-1">ข้อมูลนักศึกษา</h1>
       <div class="row">
@@ -69,7 +68,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>

@@ -4,7 +4,7 @@
   </div>
   <!-- The sidebar -->
   <div v-else class="row">
-    <div class="col col-2" style="margin-top:80px;max-width: 220px;">
+    <div class="col col-1.5" style="margin-top:80px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AdminCompany" style="background:#FF6E30;color:white">เเบ่งกลุ่มตามโครงการ/อนุมัติสิทธิ์</a>
         <a href="/AllCompanyView">เเสดงความประสงค์ที่ปรึกษา/กรรมการนิเทศสหกิจ</a>
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="col col-10">
+    <div class="col col-10.5">
       <!-- Display Student Content -->
       <h1 class="mb-4 formtitle-1">ข้อมูลบริษัท (Admin)
       </h1>
@@ -21,19 +21,15 @@
         <thead class="table table-striped thead-light clm" style="background-color: #FF6E30">
           <tr>
             <th>รายละเอียด</th>
-            <th>ชื่อบริษัท</th>
-            <th>สถานที่ทำงาน</th>
-            <th>เบอร์โทร</th>
-            <th>ผู้จัดการโครงการ/หัวหน้า</th>
+            <th class="col-1">ชื่อบริษัท</th>
             <th>ชื่อโครงการ</th>
-            <th>วัตถุประสงค์ของโครงการ</th>
-            <th>ระยะเวลาของโครงการ</th>
-            <th>จำนวนนักศึกษาที่ต้องการ</th>
+            <th class="col-2">ระยะเวลาของโครงการ</th>
+            <th class="col-1">จำนวนนักศึกษาที่ต้องการ</th>
             <th>ลักษณะงาน</th>
             <th>เครื่องมือและทักษะที่ต้องใช้</th>
             <th>ระดับบริษัท</th>
             <th>สถานะการอนุมัติ</th>
-            <th>จัดการข้อมูล</th>
+            <th class="col-1">จัดการข้อมูล</th>
           </tr>
         </thead>
         <tbody>
@@ -45,11 +41,7 @@
               </router-link>
             </td>
             <td>{{ company.thaiName }}</td>
-            <td>{{ company.workLocation }}</td>
-            <td>{{ company.phone }}</td>
-            <td>{{ company.managerName }}</td>
             <td>{{ company.projectName }}</td>
-            <td>{{ company.projectObjective }}</td>
             <td>{{ company.projectPeriod }}</td>
             <td>{{ company.studentQuantityRequire }}</td>
             <td>{{ company.projectDescription }}</td>
@@ -60,8 +52,8 @@
             <td v-else-if="company.projectLevel == 1">พอใช้</td>
             <td v-else></td>
             <!-- สถานะการอนุมัติ -->
-            <td v-if="company.approveStatus == true">Approved</td>
-            <td v-else>Not Approve</td>
+            <td v-if="company.approveStatus == true">อนุมัติสิทธิ์แล้ว</td>
+            <td v-else>ยังไม่อนุมัติสิทธิ์</td>
             <td>
               <router-link v-if="company.fileStatus === true" :to="{path: `/ShowFileCompany/${company.id}`}"
                     class="text-decoration-none btn btn-document-uploaded">
@@ -356,7 +348,6 @@
     display: inline-block;
     justify-content: center;
     animation: fade 0.3s ease-in-out 0s;
-
     text-align: center;
   }
 

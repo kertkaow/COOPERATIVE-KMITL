@@ -4,14 +4,14 @@
 </div>
   <!-- The sidebar -->
   <div v-else class="row">
-    <div class="col col-2" style="margin-top:60px;max-width: 220px;">
+    <div class="col col-1.5" style="margin-top:60px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AllMatchingView">โครงการสหกิจทั้งหมด</a>
         <a href="/TeacherMentorView" style="background-color: #FF6E30;color:#FFFF">อาจารย์ที่ปรึกษา</a>
         <a href="/TeacherDirectorView">กรรมการนิเทศ</a>
       </div>
     </div>
-    <div class="col-10">
+    <div class="col col-10.5">
       <!-- Display Student Content -->
       <div class="d-flex head-container">
         <h1 class="mb-4 formtitle-1">ข้อมูลสหกิจที่เป็น [ อาจารย์ที่ปรึกษา ]</h1>
@@ -26,13 +26,11 @@
                 <th>ชื่อ</th>
                 <th>นามสกุล</th>
                 <th>ชื่อบริษัท</th>
-                <th>ตำแหน่งงาน</th>
                 <th>โครงการ</th>
                 <th>อาจารย์ที่ปรึกษา</th>
                 <th>กรรมการนิเทศสหกิจ</th>
                 <th>สถานะปัจจุบัน</th>
                 <th>Memo</th>
-                <th>สถานที่ฝึกงาน</th>
                 <th>นัดสอบโปรเจค</th>
                 <th>สถานะ</th>
                 <th>จัดการ</th>
@@ -51,7 +49,6 @@
                 <td>{{ MatchingMentor.studentData.lastName }}</td>
                 <td>{{ MatchingMentor.companyData.thaiName }}</td>
                 <td>{{ MatchingMentor.companyData.projectName }}</td>
-                <td>{{ MatchingMentor.companyData.projectName }}</td>
                 <td>{{ MatchingMentor.companyData.projectTeacherMentor.userName }}</td>
                 <td>{{ MatchingMentor.companyData.projectTeacherDirector.userName }}</td>
                 <td>{{ MatchingMentor.cooperativeStatus.projectStatusNow }}</td>
@@ -61,7 +58,6 @@
                     ดู Memo
                   </router-link>
                 </td>
-                <td>{{ MatchingMentor.companyData.workLocation }}</td>
                 <td>{{ MatchingMentor.cooperativeStatus.projectExamdate }}</td>
                 <td>{{ MatchingMentor.cooperativeStatus.projectStatus }}</td>
                 <td>

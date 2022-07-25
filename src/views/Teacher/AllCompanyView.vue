@@ -4,7 +4,7 @@
   </div>
   <!-- The sidebar -->
   <div v-else class="row">
-    <div class="col col-2" style="margin-top:64px;max-width: 220px;">
+    <div class="col col-1.5" style="margin-top:64px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AdminCompany">เเบ่งกลุ่มตามโครงการ/อนุมัติสิทธิ์</a>
         <a class="/active" href="/AllCompanyView"
@@ -13,7 +13,7 @@
         <a href="/AdminMatching">สหกิจศึกษา</a>
       </div>
     </div>
-    <div class="col col-10">
+    <div class="col col-10.5">
       <!-- Display Student Content -->
       <h1 class="mb-4 formtitle-1">ข้อมูลโครงการสหกิจ</h1>
       <table class="table table-hover">
@@ -21,8 +21,6 @@
           <tr>
             <th>รายละเอียด</th>
             <th>ชื่อบริษัท</th>
-            <th>สถานที่ทำงาน</th>
-            <th>ผู้จัดการโครงการ/หัวหน้า</th>
             <th>ชื่อโครงการ</th>
             <th>ลักษณะงาน</th>
             <th>เครื่องมือที่ต้องใช้</th>
@@ -41,11 +39,7 @@
               </router-link>
             </td>
             <td>{{ company.thaiName }}</td>
-            <td>{{ company.workLocation }}</td>
-
-            <td>{{ company.managerName }}</td>
             <td>{{ company.projectName }}</td>
-
             <td>{{ company.projectDescription }}</td>
             <td>{{ company.projectSkill}}</td>
             <td v-if="company.projectTeacherMentor.userName != '' && this.userProfile.roles == 'Teacher' ">

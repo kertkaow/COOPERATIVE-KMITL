@@ -4,14 +4,14 @@
 </div>
   <!-- The sidebar -->
   <div v-else class="row d-flex">
-    <div class="col col-2" style="margin-top:61px;max-width: 220px;">
+    <div class="col col-1.5" style="margin-top:61px;max-width: 220px;">
       <div class="sidebar">
         <a href="/AllMatchingView">โครงการสหกิจทั้งหมด</a>
         <a href="/TeacherMentorView">อาจารย์ที่ปรึกษา</a>
         <a href="/TeacherDirectorView" style="background-color: #FF6E30;color:#FFFF">กรรมการนิเทศ</a>
       </div>
     </div>
-    <div class="col-10">
+    <div class="col col-10.5">
       <!-- Display Student Content -->
       <div class="d-flex head-container">
         <h1 class="mb-4 formtitle-1">ข้อมูลสหกิจที่เป็น [ กรรมการนิเทศ ]</h1>
@@ -26,13 +26,11 @@
                 <th>ชื่อ</th>
                 <th>นามสกุล</th>
                 <th>ชื่อบริษัท</th>
-                <th>ตำแหน่งงาน</th>
                 <th>โครงการ</th>
                 <th>อาจารย์ที่ปรึกษา</th>
                 <th>กรรมการนิเทศสหกิจ</th>
                 <th>สถานะปัจจุบัน</th>
                 <th>Memo</th>
-                <th>สถานที่ฝึกงาน</th>
                 <th>นัดสอบโปรเจค</th>
                 <th>สถานะ</th>
                 <th>จัดการ</th>
@@ -51,7 +49,6 @@
                 <td>{{ MatchingDirector.studentData.lastName }}</td>
                 <td>{{ MatchingDirector.companyData.thaiName }}</td>
                 <td>{{ MatchingDirector.companyData.projectName }}</td>
-                <td>{{ MatchingDirector.companyData.projectName }}</td>
                 <td>{{ MatchingDirector.companyData.projectTeacherMentor.userName }}</td>
                 <td>{{ MatchingDirector.companyData.projectTeacherDirector.userName }}</td>
                 <td>{{ MatchingDirector.cooperativeStatus.projectStatusNow }}</td>
@@ -61,7 +58,6 @@
                     ดู Memo
                   </router-link>
                 </td>
-                <td>{{ MatchingDirector.companyData.workLocation }}</td>
                 <td>{{ MatchingDirector.cooperativeStatus.projectExamdate }}</td>
                 <td>{{ MatchingDirector.cooperativeStatus.projectStatus }}</td>
 
